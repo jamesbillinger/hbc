@@ -6,7 +6,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import { Route, BrowserRouter, Link, Redirect, Switch } from 'react-router-dom';
-import Button from 'components/button';
+import MenuButton from 'components/menuButton';
+import Logo from './logo';
 
 class Dashboard extends Component {
   componentDidMount() {
@@ -38,25 +39,23 @@ class Dashboard extends Component {
     const { history, location, cookbook } = this.props;
     const { recipesData } = cookbook;
     return (
-      <div style={{flex:'1 0 auto', width:'100%', display:'flex'}}>
-        <div style={{width:'200px', borderRight:'1px solid #eee'}}>
-          <div style={{textAlign:'center', padding:'10px 0px'}}>
-            {/*<Button onClick={this.openRecipe.bind(this, '')}>Add New Recipe</Button>*/}
+      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
+                   display:'flex', justifyContent:'center'}}>
+        <div style={{width:'1000px', maxWidth:'100%', margin:'4vw',
+                     display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-around'}}>
+          <div style={{flex:'2 1 auto'}} />
+          <Logo />
+          <div style={{flex:'1 0 auto', color:'rgba(0,0,0,0.4)', fontSize:'30px', display:'flex', alignItems:'center'}}>
+            <div style={{}}>Respect. Hard work. Fun.</div>
           </div>
-        </div>
-        <div style={{flex:'1 0 auto', padding:'10px'}}>
-
-
-          {recipesData && Object.keys(recipesData).map((k) => {
-            const r = recipesData[k];
-            return (
-              <div key={k} style={{display:'flex'}}>
-                <div>{k}</div>
-                <div>{r.title}</div>
-              </div>
-            );
-          })}
-          {/*<Route path='/recipe/:recipeid?' component={Recipe} />*/}
+          <div style={{flex:'1 0 auto'}}>
+            <MenuButton to='/register' location={location}
+                        style={{padding:'16px 50px', border:'none', borderRadius:'30px', color:'white',
+                                backgroundColor: '#8BC34A'}}>
+              Sign Up
+            </MenuButton>
+          </div>
+          <div style={{flex:'1 1 auto'}} />
         </div>
       </div>
     );

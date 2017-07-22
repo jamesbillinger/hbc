@@ -2,7 +2,7 @@
  * Created by jamesbillinger on 4/2/17.
  */
 import React, { Component } from 'react'
-import { auth } from 'src/auth'
+//import { auth } from 'src/auth'
 
 function setErrorMsg(error) {
   return {
@@ -17,10 +17,10 @@ export default class Register extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    auth(this.email.value, this.pw.value)
+    /*auth(this.email.value, this.pw.value)
       .catch(e =>
         this.setState(setErrorMsg(e))
-      );
+      );*/
   }
 
   render () {

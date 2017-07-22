@@ -5,3 +5,75 @@ html {
 td {
   border-bottom: 1px solid #ddd;
 }
+
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave.fade-leave-active {
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 0.2s ease-in 0.3s;
+}
+
+.fade-height {
+  transition: height .3s ease-in-out;
+}
+
+
+a {
+  text-decoration:none;
+  display:inline-block;
+  color:#b9b9b9
+}
+
+header nav a.active,header nav a:hover{
+  color:#000
+}
+header nav a,header nav a:after{
+  transition:all ease .2s
+}
+
+header nav a {
+  position:relative;
+  margin-right:30px;
+  font-size:18px;
+}
+header nav a:last-child{
+  margin-right:0
+}
+header nav a:after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-5px;
+  width:0;
+  height:2px;
+  background-color:#000
+}
+header nav a.active:after{
+  -webkit-animation:hoverBar .3s forwards;
+  animation:hoverBar .3s forwards
+}
+@-webkit-keyframes hoverBar {
+  0% {
+    width: 0
+  }
+  100% {
+    width: 100%
+  }
+}
+@keyframes hoverBar{
+  0% {
+    width:0
+  }
+  100% {
+    width:100%
+  }
+}
