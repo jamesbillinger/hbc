@@ -5,7 +5,7 @@ import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 
 const initialState = {};
-function cookbook(state = initialState, action) {
+function hbc(state = initialState, action) {
   switch (action.type) {
     case 'FETCH_RECIPES_STARTED':
       return Object.assign({}, state, {
@@ -42,7 +42,7 @@ function cookbook(state = initialState, action) {
 }
 
 const rootReducer = combineReducers({
-  cookbook,
+  hbc,
   form: formReducer
 });
 

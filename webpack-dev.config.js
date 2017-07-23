@@ -90,6 +90,10 @@ module.exports = {
       {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff", include: include},
       {test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader?name=[name].[ext]", include: include},
       {test: require.resolve("react-addons-perf"), loader: "expose?Perf", include: include},*/
+      {
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        loader: 'file?name=public/fonts/[name].[ext]'
+      },
       {test: /\.json$/, loader: "json-loader", include: include}
     ]
   }

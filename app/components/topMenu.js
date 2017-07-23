@@ -20,10 +20,12 @@ export default class Main extends Component {
         </nav>
         <nav style={{display:'flex', alignItems:'center'}}>
           <MenuButton to='/login' location={location} >Log In</MenuButton>
-          <MenuButton to='/register' location={location}
-                      style={{padding:'16px 30px', border:'1px solid rgba(0,0,0,0.1)', borderRadius:'30px', color:'#000'}}>
-            Register
-          </MenuButton>
+          {location.pathname !== '/register' &&
+            <MenuButton to='/register' location={location}
+                        style={{padding:'16px 30px', border:'1px solid rgba(0,0,0,0.1)', borderRadius:'30px', color:'#000'}}>
+              Register
+            </MenuButton>
+          }
         </nav>
       </header>
     );

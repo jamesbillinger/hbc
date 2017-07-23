@@ -5,7 +5,7 @@ import { white, darkBlack, fullBlack } from "material-ui/styles/colors";
 import { fade } from "material-ui/utils/colorManipulator";
 import * as Spacing from "material-ui/styles/spacing";
 
-module.exports = {
+export default {
   spacing: Spacing,
   fontFamily: 'Roboto, sans-serif',
   fontWeight: '300',
@@ -23,9 +23,9 @@ module.exports = {
     alternateTextColor: '#757575',
     canvasColor: white,
     borderColor: '#BDBDBD',
-    disabledColor: fade(darkBlack, 0.3),
+    disabledColor: '#ddd',
     pickerHeaderColor:'#0D3461',
     clockCircleColor:fade(darkBlack,0.07),
-    shadowColor:fullBlack
+    shadowColor:'#fff'
   }
 };

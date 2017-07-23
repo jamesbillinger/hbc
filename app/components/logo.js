@@ -26,7 +26,6 @@ export default class Logo extends Component {
       <div style={{flex:'1 1 auto', width:'100%'}}>
         <AutoSizer>
           {({height, width}) => {
-            console.log(width, height, sample(sizes), width / sample(sizes));
             return (
               <div style={{height:height + 'px', width: width + 'px', display:'flex', alignItems:'center', justifyContent:'center'}}>
                 <div style={{display:'flex', alignItems:'flex-end'}}>

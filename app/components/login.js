@@ -3,24 +3,24 @@
  */
 import React, { Component } from 'react'
 import firebase from 'firebase';
+import { Field, reduxForm } from 'redux-form';
+import FormInput from 'components/formInput';
+import Button from 'components/button';
+import { required, email } from '../validators';
 const providers = {
   google: new firebase.auth.GoogleAuthProvider()
 };
 providers.google.addScope('https://www.googleapis.com/auth/plus.login');
 
-function setErrorMsg(error) {
-  return {
-    loginMessage: error
-  };
-}
+class Login extends Component {
+  constructor() {
+    super();
+    this._submit = ::this.submit;
+  }
 
-export default class Login extends Component {
-  state = {
-    loginMessage: null
-  };
-
-  loginProvider(providerName) {
+  submit(data) {
     const { onLoggedIn } = this.props;
+    const providerName = 'email';
     firebase.auth().signInWithPopup(providers[providerName])
       .then((result) => {
         //var token = result.credential.accessToken;
@@ -44,14 +44,30 @@ export default class Login extends Component {
   }
 
   render () {
-    const { loginMessage } = this.state;
+    const { handleSubmit, pristine, submitting, valid } = this.props;
     return (
-      <div style={{alignItems:'center', justifyContent:'center', flex:'1 0 auto', width:'100%', display:'flex',
-                   flexDirection:'column'}}>
-        <h1> Login </h1>
-        {loginMessage}
-        <button onClick={this.loginProvider.bind(this, 'google')}>Login With Google</button>
+      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
+                   display:'flex', justifyContent:'center', alignItems:'center'}}>
+        <form onSubmit={handleSubmit(this._submit)}>
+          <div>
+            <Field component={FormInput} name='email' label='Email Address'
+                   validate={[required, email]} />
+            <Field component={FormInput} name='password' label='Password' type='password'
+                   validate={[required]} />
+          </div>
+          <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
+            <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid}
+                    primary={true} type='submit'>
+              Login
+            </Button>
+          </div>
+        </form>
       </div>
     );
   }
 }
+
+export default reduxForm({
+  // a unique name for the form
+  form: 'LoginForm'
+})(Login)

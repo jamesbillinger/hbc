@@ -40,6 +40,9 @@ export default class Main extends Component {
                   <Route path='/contact' render={(props) =>
                     <Contact {...props} firebaseRef={this.firebaseRef} auth={this.auth} />
                   } />
+                  <Route path='/register' render={(props) =>
+                    <Register {...props} firebaseRef={this.firebaseRef} auth={this.auth} />
+                  } />
                   <Route path='/schedule' render={(props) => {
                     if (!loggedIn) {
                       return <Redirect to='/login' />;

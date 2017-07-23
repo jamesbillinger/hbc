@@ -16,7 +16,8 @@ export default class FormInput extends Component {
     let newStyle = Object.assign({
       margin:'0px 10px',
       verticalAlign:'top',
-      fontWeight:'normal'
+      fontWeight:'normal',
+      display:'block'
     }, style);
     if (props.disabled) {
       newStyle.color = 'rgba(0,0,0,0.3)';
@@ -28,7 +29,7 @@ export default class FormInput extends Component {
       <TextField ref={(c) => this._field = c} id='unique' style={newStyle} value={value || ''}
                  floatingLabelStyle={{pointerEvents: 'none', whiteSpace:'nowrap', left:'0px', color:'rgba(33, 33, 33, 0.5)'}}
                  type={type} onChange={onChange} floatingLabelText={label} errorText={(touched && error) ? error : null}
-                 underlineFocusStyle={{borderColor:'rgb(158, 158, 158)'}} onBlur={onBlur} onFocus={onFocus} {...props} />
+                 onBlur={onBlur} onFocus={onFocus} {...props} />
     );
   }
 }

@@ -36,8 +36,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { history, location, cookbook } = this.props;
-    const { recipesData } = cookbook;
+    const { history, location, hbc } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
@@ -64,7 +63,7 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    cookbook: state.cookbook
+    hbc: state.hbc
   };
 }
 

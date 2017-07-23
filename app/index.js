@@ -9,6 +9,9 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import firebase from 'firebase';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import materialTheme from './materialTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import 'public/fonts/index.css';
 import 'public/theme.css';
 import configureStore from './store';
 import Main from 'components/main';
@@ -52,7 +55,7 @@ class App extends Component {
     const { loggedIn } = this.state;
     return (
       <Provider store={store}>
-        <MuiThemeProvider>
+        <MuiThemeProvider muiTheme={getMuiTheme(materialTheme)}>
           <BrowserRouter>
             <Main />
           </BrowserRouter>

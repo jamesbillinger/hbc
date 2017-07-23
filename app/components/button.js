@@ -2,11 +2,11 @@
  * Created by jamesbillinger on 4/18/17.
  */
 import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class Button extends Component {
   render() {
     const { onClick, ...props } = this.props;
-    return <RaisedButton onTouchTap={onClick} {...props} />;
+    return <FlatButton onTouchTap={onClick} {...props} />;
   }
 }

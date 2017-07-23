@@ -10,7 +10,9 @@ export default class About extends Component {
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
         <div style={{width:'600px', maxWidth:'100%', margin:'4vw'}}>
-          <p>The Hays Baseball Club was created in 2013 as a home for </p>
+          <p>
+            The Hays Baseball Club was created in 2013 as a home for
+          </p>
           <p>
             Our mission is to provide an equal opportunity for young men from Hays and the surrounding areas
             to develop as baseball players; having the chance to complete at a high level while instilling discipline,

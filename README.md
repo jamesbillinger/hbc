@@ -5,7 +5,6 @@ for luke:
  - who is HBC Board?
 
 TODO:
- - Roboto font
  - register page
  - make register button border dark on hover
  - make sign up button color darker on hover
