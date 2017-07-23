@@ -21,9 +21,17 @@ class Register extends Component {
     this._submit = ::this.submit;
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { hbc } = this.props;
+    if (hbc.authErr && hbc.authErr !== prevProps.hbc.authErr) {
+      if (hbc.authErr.code === 'auth/email-already-in-use') {
+        //redirect to login and pass email address
+      }
+    }
+  }
+
   submit(data) {
     const { actions } = this.props;
-    console.log(data, actions);
     actions.register(data.email, data.password);
   }
 

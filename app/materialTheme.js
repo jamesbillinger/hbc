@@ -26,6 +26,6 @@ export default {
     disabledColor: '#ddd',
     pickerHeaderColor:'#0D3461',
     clockCircleColor:fade(darkBlack,0.07),
-    shadowColor:'#fff'
+    shadowColor:fullBlack
   }
 };

@@ -21,26 +21,7 @@ class Login extends Component {
   submit(data) {
     const { onLoggedIn } = this.props;
     const providerName = 'email';
-    firebase.auth().signInWithPopup(providers[providerName])
-      .then((result) => {
-        //var token = result.credential.accessToken;
-        //var user = result.user;
-        onLoggedIn && onLoggedIn();
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.code === 'TRANSPORT_UNAVAILABLE') {
-          firebase.auth().signInWithRedirect(providers[providerName])
-            .then((result) => {
-              onLoggedIn && onLoggedIn();
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
-          //self.props.errorHandler(error);
-        }
-      });
+    actions.login(data.email, data.password);
   }
 
   render () {
