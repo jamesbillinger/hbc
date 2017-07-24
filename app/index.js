@@ -15,6 +15,8 @@ import 'public/fonts/material-icons.css';
 import 'public/theme.css';
 import configureStore from './store';
 import Main from 'components/main';
+import TopMenu from 'components/topMenu';
+import moment from 'moment';
 
 const store  = configureStore({});
 
@@ -31,7 +33,18 @@ class App extends Component {
       <Provider store={store}>
         <MuiThemeProvider muiTheme={getMuiTheme(materialTheme)}>
           <BrowserRouter>
-            <Main />
+            <div style={{height:'100%', display:'flex', flexDirection:'column', color:'#212121', fontFamily:'sans-serif'}}>
+              <Route component={TopMenu} />
+              <div style={{flex:'1 1 auto', width:'100%', position:'relative', minHeight:'400px'}}>
+                <Route render={({ location }) => (
+                  <Main location={location} />
+                )} />
+              </div>
+              <div style={{flex:'0 0 40px', color:'#ddd', fontSize:'12px',
+                           display:'flex', alignItems:'center', justifyContent:'center'}}>
+                <div>Copyright Ⓒ Hays Baseball Club {moment().format('YYYY')}</div>
+              </div>
+            </div>
           </BrowserRouter>
         </MuiThemeProvider>
       </Provider>

@@ -11,6 +11,7 @@ import Icon from 'components/icon';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
+import { Link } from 'react-router-dom';
 
 class Main extends Component {
   render() {
@@ -27,6 +28,9 @@ class Main extends Component {
         </nav>
         <nav style={{display:'flex', alignItems:'center'}}>
           {!user && <MenuButton to='/login' location={location} >Log In</MenuButton>}
+          {user && user.admin &&
+            <MenuButton to='/admin' location={location}>Admin</MenuButton>
+          }
           {!user && location.pathname !== '/register' &&
             <MenuButton to='/register' location={location}
                         style={{padding:'16px 30px', border:'1px solid rgba(0,0,0,0.1)', borderRadius:'30px', color:'#000'}}>
@@ -35,7 +39,7 @@ class Main extends Component {
           }
           {user &&
             <IconMenu iconButtonElement={<Icon icon='account_circle' />}>
-              <MenuItem primaryText='Manage my profile' />
+              <MenuItem primaryText={<Link to='/profile' style={{color:'black'}}>Manage my profile</Link>} />
               <Divider />
               <MenuItem primaryText='Sign out' onTouchTap={::actions.logout} />
             </IconMenu>

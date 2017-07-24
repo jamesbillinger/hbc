@@ -1,6 +1,3 @@
-/**
- * Created by jamesbillinger on 4/2/17.
- */
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -8,25 +5,22 @@ import * as Actions from 'app/actions';
 import { Field, reduxForm } from 'redux-form';
 import FormInput from 'components/formInput';
 import Button from 'components/button';
-//import { auth } from 'src/auth';
 import { required, email } from '../validators';
 
-
-class Register extends Component {
+class UserForm extends Component {
   constructor() {
     super();
+    this.state = {};
   }
 
   componentWillMount() {
     this._submit = ::this.submit;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { hbc } = this.props;
-    if (hbc.authErr && hbc.authErr !== prevProps.hbc.authErr) {
-      if (hbc.authErr.code === 'auth/email-already-in-use') {
-        //redirect to login and pass email address
-      }
+  componentDidMount() {
+    const { actions, hbc } = this.props;
+    if (!hbc.users) {
+      actions.fetchUsers();
     }
   }
 
@@ -43,11 +37,11 @@ class Register extends Component {
     })
   }
 
-  render () {
+  render() {
     const { handleSubmit, pristine, submitting, valid } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center', alignItems:'center'}}>
+                   display:'flex', justifyContent:'center'}}>
         <form onSubmit={handleSubmit(this._submit)}>
           <div>
             <Field component={FormInput} name='name' label='Name'
@@ -84,8 +78,8 @@ function mapDispatchToProps(dispatch) {
 
 export default reduxForm({
   // a unique name for the form
-  form: 'RegisterForm'
+  form: 'UserForm'
 })(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Register))
+)(UserForm))

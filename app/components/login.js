@@ -2,26 +2,34 @@
  * Created by jamesbillinger on 4/2/17.
  */
 import React, { Component } from 'react'
-import firebase from 'firebase';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from 'app/actions';
 import { Field, reduxForm } from 'redux-form';
 import FormInput from 'components/formInput';
 import Button from 'components/button';
 import { required, email } from '../validators';
-const providers = {
-  google: new firebase.auth.GoogleAuthProvider()
-};
-providers.google.addScope('https://www.googleapis.com/auth/plus.login');
 
 class Login extends Component {
   constructor() {
     super();
+  }
+
+  componentWillMount() {
     this._submit = ::this.submit;
   }
 
   submit(data) {
-    const { onLoggedIn } = this.props;
-    const providerName = 'email';
-    actions.login(data.email, data.password);
+    const { actions } = this.props;
+    return new Promise((resolve, revoke) => {
+      actions.login(data.email, data.password, (r, err) => {
+        if (err) {
+          revoke(err);
+        } else {
+          resolve(r);
+        }
+      });
+    })
   }
 
   render () {
@@ -48,7 +56,22 @@ class Login extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    hbc: state.hbc
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({...Actions}, dispatch)
+  };
+}
+
 export default reduxForm({
   // a unique name for the form
   form: 'LoginForm'
-})(Login)
+})(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login))

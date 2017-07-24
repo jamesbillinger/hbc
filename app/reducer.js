@@ -9,8 +9,12 @@ function hbc(state = initialState, action) {
   switch (action.type) {
     case 'UPDATE_AUTH':
       return Object.assign({}, state, {
-        user: action.user,
+        user: action.err ? undefined : (action.user || state.user),
         authErr: action.err
+      });
+    case 'FETCH_USERS':
+      return Object.assign({}, state, {
+        users: action.users || {}
       });
 
     default:

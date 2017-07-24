@@ -10,33 +10,8 @@ import MenuButton from 'components/menuButton';
 import Logo from './logo';
 
 class Dashboard extends Component {
-  componentDidMount() {
-    const { actions } = this.props;
-    //actions.getRecipes();
-    /*const { firebaseRef } = this.props;
-    const { selectedRecipe } = this.state;
-    firebaseRef.child('/recipes/').on('value', (snap) => {
-      let recipes = [];
-      snap.forEach((child) => {
-        recipes.push(Object.assign({}, child.val(), {key: child.key}));
-      });
-      this.setState({recipes})
-    }, (error) => {
-      console.log(error);
-    });*/
-  }
-
-  openRecipe(id) {
-    const { history } = this.props;
-    if (id) {
-      history.push('/recipe/' + id);
-    } else {
-      history.push('/recipe');
-    }
-  }
-
   render() {
-    const { history, location, hbc } = this.props;
+    const { history, location, user } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
@@ -48,11 +23,18 @@ class Dashboard extends Component {
             <div style={{}}>Respect. Hard work. Fun.</div>
           </div>
           <div style={{flex:'1 0 auto'}}>
-            <MenuButton to='/register' location={location}
-                        style={{padding:'16px 50px', border:'none', borderRadius:'30px', color:'white',
-                                backgroundColor: '#8BC34A'}}>
-              Sign Up
-            </MenuButton>
+            {user ?
+              <MenuButton to='/profile' location={location}
+                          style={{padding:'16px 30px', border:'none', borderRadius:'30px', color:'white',
+                            backgroundColor: '#8BC34A'}}>
+                View My Profile
+              </MenuButton> :
+              <MenuButton to='/register' location={location}
+                          style={{padding:'16px 50px', border:'none', borderRadius:'30px', color:'white',
+                            backgroundColor: '#8BC34A'}}>
+                Sign Up
+              </MenuButton>
+            }
           </div>
           <div style={{flex:'1 1 auto'}} />
         </div>
@@ -63,7 +45,7 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    hbc: state.hbc
+    user: state.hbc && state.hbc.user
   };
 }
 
