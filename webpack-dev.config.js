@@ -92,7 +92,7 @@ module.exports = {
       {test: require.resolve("react-addons-perf"), loader: "expose?Perf", include: include},*/
       {
         test: /\.(woff|woff2|eot|ttf|svg)$/,
-        loader: 'file?name=public/fonts/[name].[ext]'
+        loader: 'file?name=fonts/[name].[ext]'
       },
       {test: /\.json$/, loader: "json-loader", include: include}
     ]

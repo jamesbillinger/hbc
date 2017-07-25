@@ -77,3 +77,231 @@ header nav a.active:after{
     width:100%
   }
 }
+
+.dashboardButton {
+  background-color: #8BC34A;
+  transition:all ease .2s;
+}
+.dashboardButton:hover {
+  background-color: #689F38;
+  transition:all ease .2s;
+}
+
+.hoverIcon {
+  color: #795548;
+  transition:all ease .2s;
+}
+.hoverIcon:hover {
+  color: #857e6b;
+  transition:all ease .2s;
+}
+
+.tabButton {
+  color: #8BC34A;
+  font-weight: 300;
+  transition: all ease .2s;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  position:relative;
+}
+.tabButton:hover {
+  color: #689F38;
+  transition: all ease .2s;
+}
+.tabButton.active {
+  color: #689F38;
+  font-weight: 500;
+  transition: all ease .2s;
+}
+.tabButton:after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0px;
+  width:0;
+  height:2px;
+  background-color:#689F38
+}
+.tabButton.active:after{
+  -webkit-animation:hoverBar .3s forwards;
+  animation:hoverBar .3s forwards
+}
+
+
+.fadein {
+  animation: fadein 0.5s;
+  -moz-animation: fadein 0.5s; /* Firefox */
+  -webkit-animation: fadein 0.5s; /* Safari and Chrome */
+  -o-animation: fadein 0.5s; /* Opera */
+}
+@keyframes fadein {
+  from {
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
+}
+@-moz-keyframes fadein { /* Firefox */
+  from {
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+  from {
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
+}
+@-o-keyframes fadein { /* Opera */
+  from {
+    opacity:0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+
+
+.ReactVirtualized__Table__headerRow {
+  font-weight: 600;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -moz-box-orient: horizontal;
+  -moz-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.ReactVirtualized__Table__row {
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -moz-box-orient: horizontal;
+  -moz-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.ReactVirtualized__Table__headerTruncatedText {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ReactVirtualized__Table__headerColumn,
+.ReactVirtualized__Table__rowColumn {
+  margin-right: 10px;
+  min-width: 0px;
+}
+.ReactVirtualized__Table__rowColumn {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ReactVirtualized__Table__headerColumn:first-of-type,
+.ReactVirtualized__Table__rowColumn:first-of-type {
+  margin-left: 10px;
+}
+.ReactVirtualized__Table__sortableHeaderColumn {
+  cursor: pointer;
+}
+
+.ReactVirtualized__Table__sortableHeaderIconContainer {
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.ReactVirtualized__Table__sortableHeaderIcon {
+  -webkit-flex: 0 0 24px;
+  -moz-box-flex: 0;
+  -ms-flex: 0 0 24px;
+  flex: 0 0 24px;
+  height: 1em;
+  width: 1em;
+  fill: currentColor;
+}
+
+/* List default theme */
+
+.ReactVirtualized__List {
+}
+
+
+.Table {
+  width: 100%;
+  margin-top: 15px;
+}
+.headerRow,
+.evenRow, .oddRow {
+  border-bottom: 1px solid #e0e0e0;
+}
+.evenRow {
+  background-color: white;
+}
+.oddRow {
+  background-color: #fafafa;
+}
+.evenRow:hover, .oddRow:hover {
+  border-bottom: 1px solid #e0e0e0;
+  background-color:#efefef;
+}
+.headerColumn {
+  cursor: pointer;
+}
+.exampleColumn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkboxLabel {
+  margin-left: .5rem;
+}
+.checkboxLabel:first-of-type {
+  margin-left: 0;
+}
+
+.noRows {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  color: #bdbdbd;
+}
+
+.ReactVirtualized__Grid {
+  background-color: white;
+}

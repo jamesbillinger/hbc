@@ -7,9 +7,11 @@ import shuffle from 'lodash/shuffle';
 import { AutoSizer } from 'react-virtualized';
 
 const s = 'Hays Baseball Club';
-const colors = [
-  '#689F38','#8BC34A','#DCEDC8','#212121','#795548','#212121','#757575'
-];
+const colors = shuffle([
+  '#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575',
+  '#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575',
+  '#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575'
+]);
 const sizes = shuffle([10,12,14,14,10,10,12,10,12,14,10,12,14,10,10,12,14,10]);
 const textTransforms = [
   'capitalize','lowercase','none','lowercase',
@@ -33,7 +35,7 @@ export default class Logo extends Component {
                     return (
                       <div key={ci}
                            style={{
-                             color: sample(colors),
+                             color: colors[ci],
                              fontSize: (width / sizes[ci]) + 'px',
                              textTransform: textTransforms[ci],
                              marginRight: '2px',

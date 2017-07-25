@@ -24,7 +24,7 @@ export default {
     canvasColor: white,
     borderColor: '#BDBDBD',
     disabledColor: '#ddd',
-    pickerHeaderColor:'#0D3461',
+    pickerHeaderColor:'#E9FAD5',
     clockCircleColor:fade(darkBlack,0.07),
     shadowColor:fullBlack
   }

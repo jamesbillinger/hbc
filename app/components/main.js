@@ -24,7 +24,7 @@ class Main extends Component {
   }
 
   render() {
-    const { user, location } = this.props;
+    const { user, location, initialLoadComplete } = this.props;
     return (
       <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
         <Route location={location} key={location.key}>
@@ -40,14 +40,18 @@ class Main extends Component {
               }
             }} />
             <Route path='/login' render={(props) => {
-              if (user) {
+              if (!initialLoadComplete) {
+                return <div />;
+              } else if (user) {
                 return <Redirect to='/' />;
               } else {
                 return <Login {...props} />;
               }
             }} />
             <Route path='/register' render={(props) => {
-              if (user) {
+              if (!initialLoadComplete) {
+                return <div/>;
+              } else if (user) {
                 return <Redirect to='/profile' />;
               } else {
                 return <Register {...props} />;
@@ -56,15 +60,19 @@ class Main extends Component {
             <Route path='/admin' render={(props) => {
               if (user && user.admin) {
                 return <Admin {...props} />;
-              } else {
+              } else if (initialLoadComplete) {
                 return <Redirect to='/' />;
+              } else {
+                return <div />;
               }
             }} />
             <Route path='/profile' render={(props) => {
               if (user) {
                 return <Profile {...props} />;
-              } else {
+              } else if (initialLoadComplete) {
                 return <Redirect to='/' />;
+              } else {
+                return <div />;
               }
             }} />
             <Route render={() => <div />} />
@@ -77,7 +85,8 @@ class Main extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: state.hbc && state.hbc.user
+    user: state.hbc.user,
+    initialLoadComplete: state.hbc.initialLoadComplete
   };
 }
 

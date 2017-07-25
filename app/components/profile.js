@@ -18,30 +18,13 @@ class LabelledText extends Component {
 }
 
 class Profile extends Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-
   render() {
     const { user } = this.props;
-    const { mode } = this.state;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
         <div style={{margin:'4vw'}}>
-          <div>
-            <div>Profile</div>
-            <LabelledText label='Name' value={user.name} />
-            <LabelledText label='Phone' value={user.phone} />
-            <LabelledText label='Email' value={user.email} />
-          </div>
-          <div>
-            <div>Your Kids</div>
-          </div>
-          {mode &&
-            <UserForm initialValues={user} />
-          }
+          <UserForm initialValues={user} />
         </div>
       </div>
     );

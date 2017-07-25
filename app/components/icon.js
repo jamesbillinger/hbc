@@ -9,9 +9,29 @@ export default class Icon extends Component {
   focus() { }
 
   render() {
-    const {tooltip, style, children, onClick, onTouchTap, primary, secondary, to, href, target, iconStyle, ...props} = this.props;
+    const {tooltip, style, children, onClick, onTouchTap, primary, secondary, to, href, target, iconStyle, className, ...props} = this.props;
+
+    let newIconStyle = Object.assign({}, iconStyle);
+    if (style && style.fontSize) {
+      newIconStyle.fontSize = style.fontSize;
+      delete style.fontSize;
+    }
+    if (primary) {
+      newIconStyle.color = getMuiTheme(MaterialTheme).baseTheme.palette.primary1Color;
+    } else if (secondary) {
+      newIconStyle.color = getMuiTheme(MaterialTheme).baseTheme.palette.accent1Color;
+    } else if (!className) {
+      newIconStyle.color = '#795548';
+    } else {
+      newIconStyle.color = undefined;
+    }
+
+    let iconClassName = 'material-icons';
+    if (className) {
+      iconClassName += ' ' + className;
+    }
+
     let newStyle = {
-      color:'#795548',
       padding:'0px',
       width: 'unset',
       height: 'unset'
@@ -19,19 +39,8 @@ export default class Icon extends Component {
     if (props.onClick || props.onTouchTap) {
       newStyle.cursor = 'pointer';
     }
-    if (primary) {
-      newStyle.color = getMuiTheme(MaterialTheme).baseTheme.palette.primary1Color;
-    }
-    if (secondary) {
-      newStyle.color = getMuiTheme(MaterialTheme).baseTheme.palette.accent1Color;
-    }
     Object.assign(newStyle, style);
-    let newIconStyle = Object.assign({}, newStyle, iconStyle);
-    delete newStyle.fontSize;
-    let iconClassName = 'material-icons';
-    if (props.className) {
-      iconClassName += ' ' + props.className;
-    }
+
     let button = (
       <IconButton {...props} iconClassName={iconClassName} onTouchTap={onClick || onTouchTap} style={newStyle}
                   iconStyle={newIconStyle} tooltip={tooltip}>

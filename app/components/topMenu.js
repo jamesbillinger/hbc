@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 class Main extends Component {
   render() {
-    const { user, location, actions } = this.props;
+    const { user, location, actions, initialLoadComplete } = this.props;
     return (
       <header className='header'
            style={{flex:'0 0 60px', display:'flex', alignItems:'center', justifyContent:'space-between',
@@ -26,25 +26,29 @@ class Main extends Component {
           <MenuButton to='/about' location={location}>About</MenuButton>
           <MenuButton to='/contact' location={location}>Contact</MenuButton>
         </nav>
-        <nav style={{display:'flex', alignItems:'center'}}>
-          {!user && <MenuButton to='/login' location={location} >Log In</MenuButton>}
-          {user && user.admin &&
-            <MenuButton to='/admin' location={location}>Admin</MenuButton>
-          }
-          {!user && location.pathname !== '/register' &&
-            <MenuButton to='/register' location={location}
-                        style={{padding:'16px 30px', border:'1px solid rgba(0,0,0,0.1)', borderRadius:'30px', color:'#000'}}>
-              Register
-            </MenuButton>
-          }
-          {user &&
-            <IconMenu iconButtonElement={<Icon icon='account_circle' />}>
-              <MenuItem primaryText={<Link to='/profile' style={{color:'black'}}>Manage my profile</Link>} />
-              <Divider />
-              <MenuItem primaryText='Sign out' onTouchTap={::actions.logout} />
-            </IconMenu>
-          }
-        </nav>
+        {initialLoadComplete &&
+          <nav style={{display:'flex', alignItems:'center'}} className='fadein'>
+            {!user && <MenuButton to='/login' location={location} >Log In</MenuButton>}
+            {user && user.admin &&
+              <MenuButton to='/admin' location={location}>Admin</MenuButton>
+            }
+            {!user && location.pathname !== '/register' &&
+              <MenuButton to='/register' location={location}
+                          style={{padding:'16px 30px', border:'1px solid rgba(0,0,0,0.1)', borderRadius:'30px', color:'#000'}}>
+                Register
+              </MenuButton>
+            }
+            {user &&
+              <IconMenu iconButtonElement={<Icon icon='account_circle' className='hoverIcon' />} style={{height:'24px'}}
+                        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                <MenuItem primaryText={<Link to='/profile' style={{color:'black'}}>Manage my profile</Link>} />
+                <Divider />
+                <MenuItem primaryText='Sign out' onTouchTap={::actions.logout} />
+              </IconMenu>
+            }
+          </nav>
+        }
       </header>
     );
   }
@@ -52,7 +56,8 @@ class Main extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: state.hbc && state.hbc.user
+    user: state.hbc.user,
+    initialLoadComplete: state.hbc.initialLoadComplete
   };
 }
 
