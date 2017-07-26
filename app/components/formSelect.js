@@ -11,8 +11,16 @@ export default class FormSelect extends Component {
   }
 
   onChange(event, index, values) {
-    const { input } = this.props;
-    input && input.onChange && input.onChange(values);
+    const { input, multiple } = this.props;
+    if (multiple) {
+      let newValue = {};
+      (values || []).map((v) => {
+        newValue[v] = true;
+      });
+      input && input.onChange && input.onChange(newValue);
+    } else {
+      input && input.onChange && input.onChange(values);
+    }
   }
 
   render() {
@@ -28,8 +36,12 @@ export default class FormSelect extends Component {
     if (multiple) {
       newStyle.width = '80%';
     }
+    let myValue = value;
+    if (multiple) {
+      myValue = Object.keys(value || {}).map((k) => (k))
+    }
     return (
-      <SelectField ref={(c) => this._field = c} id='unique' style={newStyle} value={value || (multiple && [])}
+      <SelectField ref={(c) => this._field = c} id='unique' style={newStyle} value={myValue}
                    multiple={multiple}
                    floatingLabelStyle={{pointerEvents: 'none', whiteSpace:'nowrap', left:'0px', color:'rgba(33, 33, 33, 0.5)'}}
                    onChange={::this.onChange} floatingLabelText={label} errorText={(touched && error) ? error : null}
@@ -39,7 +51,7 @@ export default class FormSelect extends Component {
           let v = isObject ? o.value : o;
           let text = isObject ? o.label : o;
           return (
-            <MenuItem key={oi} insetChildren={true} checked={multiple ? (value || []).indexOf(v) > -1 : value === v}
+            <MenuItem key={oi} insetChildren={true} checked={multiple ? (myValue || []).indexOf(v) > -1 : value === v}
                       value={v} primaryText={text} />
           );
         })}

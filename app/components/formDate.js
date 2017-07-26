@@ -25,7 +25,7 @@ export default class FormDate extends Component {
       newDate.minutes(m.minutes());
       newDate.seconds(m.seconds());
     }
-    onChange && onChange(newDate._d);
+    onChange && onChange(newDate.valueOf());
   }
 
   render() {

@@ -8,6 +8,11 @@ import TeamForm from './teamForm';
 import UserForm from './userForm';
 import PlayerForm from './playerForm';
 import Icon from 'components/icon';
+import { Route, Switch, Link } from 'react-router-dom';
+import moment from 'moment';
+import find from 'lodash/find';
+import filter from 'lodash/filter';
+import map from 'lodash/map';
 
 class Admin extends Component {
   constructor() {
@@ -52,16 +57,16 @@ class Admin extends Component {
   }
 
   adminRenderer({cellData, rowData}) {
-    const { actions } = this.props;
+    const { actions, hbc } = this.props;
     return (
-      <Toggle toggled={!!cellData} onToggle={(e, isInputChecked) => {
-        actions.setUserGroup(rowData.uid, 'admin', isInputChecked);
-      }}/>
+      <Toggle toggled={!!(hbc.groups && hbc.groups.admin && hbc.groups.admin[cellData])}
+              onToggle={(e, isInputChecked) => {
+                actions.setUserGroup(rowData.uid, 'admin', isInputChecked);
+              }} />
     );
   }
 
-  verifiedRenderer({cellData, rowData}) {
-    const { actions } = this.props;
+  toggleRenderer({cellData, rowData}) {
     return (
       <Toggle toggled={!!cellData} />
     );
@@ -79,7 +84,7 @@ class Admin extends Component {
     const { hbc } = this.props;
     return (
       <div>
-        {(cellData || []).join(', ')}
+        {Object.keys(cellData || {}).map((c) => (hbc.users[c] || {}).name).join(', ')}
       </div>
     );
   }
@@ -87,30 +92,24 @@ class Admin extends Component {
   playersRenderer({cellData, rowData}) {
     return (
       <div>
-        {(cellData || []).length}
+        {Object.keys((cellData || {})).length}
       </div>
     );
   }
 
   userClick({ index, rowData }) {
-    this.setState({
-      tab: 3,
-      initialValues: rowData
-    });
+    const { history } = this.props;
+    history.push('/admin/user/' + rowData.uid);
   }
 
   teamClick({ index, rowData }) {
-    this.setState({
-      tab: 4,
-      initialValues: rowData
-    });
+    const { history } = this.props;
+    history.push('/admin/team/' + rowData.uid);
   }
 
   playerClick({ index, rowData }) {
-    this.setState({
-      tab: 5,
-      initialValues: rowData
-    });
+    const { history } = this.props;
+    history.push('/admin/player/' + rowData.uid);
   }
 
   deleteRenderer(type, {cellData, rowData}) {
@@ -124,8 +123,42 @@ class Admin extends Component {
     );
   }
 
-  render() {
+  birthDateRenderer({cellData, rowData}) {
     const { hbc } = this.props;
+    if (cellData) {
+      let v = moment(cellData);
+      let ageGroup = find(hbc.ageGroups, (a) => {
+        return v >= a.min && v <= a.max;
+      });
+      return <div>{ageGroup && ageGroup.label}</div>;
+    } else {
+      return <div />;
+    }
+  }
+
+  playerTeamRenderer({cellData, rowData}) {
+    const { hbc } = this.props;
+    if (cellData) {
+      let team = find(hbc.teams || {}, (t) => {
+        return t.players && t.players[cellData]
+      });
+      return <div>{team && team.name}</div>;
+    } else {
+      return <div />;
+    }
+  }
+
+  playerUsersRenderer({cellData, rowData}) {
+    const { hbc } = this.props;
+    return (
+      <div>
+        {Object.keys(cellData || {}).map((k) => (hbc.users[k] || {}).name).join(', ')}
+      </div>
+    );
+  }
+
+  render() {
+    const { hbc, location } = this.props;
     const { tab, initialValues } = this.state;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
@@ -134,99 +167,114 @@ class Admin extends Component {
           <div style={{display:'flex', maxWidth:'800px', width:'100%', alignItems:'center', margin:'0px 50px',
                        justifyContent:'space-between'}}>
             <div style={{display:'flex'}}>
-              <div className={'tabButton' + (tab === 0 ? ' active' : '')}
-                   style={{borderRight:'1px solid #efefef'}} onClick={this.changeTab.bind(this, 0)}>
+              <Link className={'tabButton' + (location.pathname === '/admin/users' ? ' active' : '')}
+                    style={{borderRight:'1px solid #efefef'}} to='/admin/users'>
                 Users
-              </div>
-              <div className={'tabButton' + (tab === 1 ? ' active' : '')}
-                   style={{borderRight:'1px solid #efefef'}} onClick={this.changeTab.bind(this, 1)}>
+              </Link>
+              <Link className={'tabButton' + (location.pathname === '/admin/teams' ? ' active' : '')}
+                    style={{borderRight:'1px solid #efefef'}} to='/admin/teams'>
                 Teams
-              </div>
-              <div className={'tabButton' + (tab === 2 ? ' active' : '')} onClick={this.changeTab.bind(this, 2)}>
+              </Link>
+              <Link className={'tabButton' + (location.pathname === '/admin/players' ? ' active' : '')}
+                    to='/admin/players'>
                 Players
-              </div>
+              </Link>
             </div>
             <div>
-              {tab === 0 &&
-                <div className='tabButton' onClick={this.changeTab.bind(this, 3)}>
+              <Route path='/admin/users' exact={true} render={(props) =>
+                <Link className='tabButton' to='/admin/user'>
                   Add New User
-                </div>
-              }
-              {tab === 1 &&
-              <div className='tabButton' onClick={this.changeTab.bind(this, 4)}>
-                Add New Team
-              </div>
-              }
-              {tab === 2 &&
-                <div className='tabButton' onClick={this.changeTab.bind(this, 5)}>
+                </Link>
+              } />
+              <Route path='/admin/teams' exact={true} render={(props) =>
+                <Link className='tabButton' to='/admin/team'>
+                  Add New Team
+                </Link>
+              } />
+              <Route path='/admin/players' exact={true} render={(props) =>
+                <Link className='tabButton' to='/admin/player'>
                   Add New Player
-                </div>
-              }
+                </Link>
+              } />
             </div>
           </div>
         </div>
         <div style={{flex:'1 1 auto', width:'100%', maxWidth:'800px', paddingTop:'20px'}}>
           <AutoSizer>
-            {({height, width}) => {
-              if (tab === 0) {
-                return (
-                  <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.users || {}).length}
-                         rowGetter={({ index }) => hbc.users[Object.keys(hbc.users)[index]]}
-                         rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.userClick}>
-                    <Column label='' dataKey='uid' width={30} flexGrow={0}
-                            cellRenderer={this.deleteRenderer.bind(this, 'User')} />
-                    <Column label='Name' dataKey='name' width={100} flexGrow={1}/>
-                    <Column width={200} label='Email' dataKey='email' flexGrow={1} />
-                    <Column width={80} label='Verified' dataKey='emailVerified' flexGrow={0} cellRenderer={::this.verifiedRenderer} />
-                    <Column width={80} label='Admin' dataKey='admin' flexGrow={0} cellRenderer={::this.adminRenderer}/>
-                  </Table>
-                );
-              } else if (tab === 1) {
-                return (
-                  <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.teams || {}).length}
-                         rowGetter={({ index }) => hbc.teams[Object.keys(hbc.teams)[index]]}
-                         rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.teamClick}>
-                    <Column label='' dataKey='uid' width={30} flexGrow={0}
-                            cellRenderer={this.deleteRenderer.bind(this, 'Team')} />
-                    <Column label='Name' dataKey='name' width={100} flexGrow={1}/>
-                    <Column width={80} label='Age' dataKey='age' flexGrow={0} />
-                    <Column width={80} label='Coaches' dataKey='coaches' flexGrow={3} cellRenderer={::this.coachesRenderer} />
-                    <Column width={80} label='Players' dataKey='players' flexGrow={0} cellRenderer={::this.playersRenderer} />
-                  </Table>
-                );
-              } else if (tab === 2) {
-                return (
-                  <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.players || {}).length}
-                         rowGetter={({ index }) => hbc.players[Object.keys(hbc.players)[index]]}
-                         rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.playerClick}>
-                    <Column label='' dataKey='uid' width={30} flexGrow={0}
-                            cellRenderer={this.deleteRenderer.bind(this, 'Player')} />
-                    <Column label='Name' dataKey='name' width={100} flexGrow={1}/>
-                    <Column width={200} label='Email' dataKey='email' flexGrow={1} />
-                    <Column width={80} label='Verified' dataKey='emailVerified' flexGrow={0} cellRenderer={::this.verifiedRenderer} />
-                    <Column width={80} label='Admin' dataKey='admin' flexGrow={0} cellRenderer={::this.adminRenderer}/>
-                  </Table>
-                );
-              } else if (tab === 3) {
-                return (
-                  <div style={{width: width + 'px'}}>
-                    <UserForm closeAction={this.changeTab.bind(this, 0)} initialValues={initialValues} />
-                  </div>
-                );
-              } else if (tab === 4) {
-                return (
-                  <div style={{width: width + 'px'}}>
-                    <TeamForm closeAction={this.changeTab.bind(this, 1)} initialValues={initialValues} />
-                  </div>
-                );
-              } else if (tab === 5) {
-                return (
-                  <div style={{width: width + 'px'}}>
-                    <PlayerForm closeAction={this.changeTab.bind(this, 1)} initialValues={initialValues} />
-                  </div>
-                );
-              }
-            }}
+            {({height, width}) =>
+              <Route location={location} key={location.key}>
+                <Switch>
+                  <Route path='/admin/users' exact={true} render={(props) =>
+                    <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.users || {}).length}
+                           rowGetter={({ index }) => hbc.users[Object.keys(hbc.users)[index]]} rowStyle={{cursor:'pointer'}}
+                           rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.userClick}>
+                      <Column label='' dataKey='uid' width={30} flexGrow={0}
+                              cellRenderer={this.deleteRenderer.bind(this, 'User')} />
+                      <Column label='Name' dataKey='name' width={100} flexGrow={1}/>
+                      <Column width={200} label='Email' dataKey='email' flexGrow={1} />
+                      <Column width={100} label='Phone' dataKey='phone' flexGrow={1} />
+                      <Column width={80} label='Verified' dataKey='emailVerified' flexGrow={0} cellRenderer={::this.toggleRenderer} />
+                      <Column width={80} label='Admin' dataKey='uid' flexGrow={0} cellRenderer={::this.adminRenderer}/>
+                      <Column width={80} label='+ Coach' dataKey='willingToCoach' flexGrow={0} cellRenderer={::this.toggleRenderer} />
+                    </Table>
+                  } />
+                  <Route path='/admin/user/:uid?' render={(props) =>
+                    <div style={{width: width + 'px'}}>
+                      {hbc.users &&
+                        <UserForm initialValues={hbc.users[props.match.params.uid]}
+                                  title={props.match.params.uid ? 'Edit User' : 'Add New User'}
+                                  titleStyle={{width:'280px', paddingBottom:'20px'}}
+                                  form={'UserForm_' + (props.match.params ? props.match.params.uid : 'new')} {...props} />
+                      }
+                    </div>
+                  } />
+                  <Route path='/admin/teams' exact={true} render={(props) =>
+                    <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.teams || {}).length}
+                           rowGetter={({ index }) => hbc.teams[Object.keys(hbc.teams)[index]]} rowStyle={{cursor:'pointer'}}
+                           rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.teamClick}>
+                      <Column label='' dataKey='uid' width={30} flexGrow={0}
+                              cellRenderer={this.deleteRenderer.bind(this, 'Team')} />
+                      <Column label='Name' dataKey='name' width={100} flexGrow={1}/>
+                      <Column width={80} label='Age' dataKey='ageGroup' flexGrow={0} />
+                      <Column width={80} label='Coaches' dataKey='coaches' flexGrow={3} cellRenderer={::this.coachesRenderer} />
+                      <Column width={80} label='Players' dataKey='players' flexGrow={0} cellRenderer={::this.playersRenderer} />
+                    </Table>
+                  } />
+                  <Route path='/admin/team/:uid?' render={(props) =>
+                    <div style={{width: width + 'px'}}>
+                      {hbc.teams &&
+                        <TeamForm initialValues={hbc.teams[props.match.params.uid]}
+                                  title={props.match.params.uid ? 'Edit Team' : 'Add New Team'}
+                                  titleStyle={{width:'280px', paddingBottom:'20px'}}
+                                  form={'TeamForm_' + (props.match.params ? props.match.params.uid : 'new')} {...props} />
+                      }
+                    </div>
+                  } />
+                  <Route path='/admin/players' exact={true} render={(props) =>
+                    <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.players || {}).length}
+                           rowGetter={({ index }) => hbc.players[Object.keys(hbc.players)[index]]} rowStyle={{cursor:'pointer'}}
+                           rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.playerClick}>
+                      <Column label='' dataKey='uid' width={30} flexGrow={0}
+                              cellRenderer={this.deleteRenderer.bind(this, 'Player')} />
+                      <Column label='Name' dataKey='name' width={150} flexGrow={1}/>
+                      <Column width={100} label='Age Group' dataKey='birthdate' flexGrow={0} cellRenderer={::this.birthDateRenderer} />
+                      <Column width={100} label='Team' dataKey='uid' flexGrow={1} cellRenderer={::this.playerTeamRenderer} />
+                      <Column width={150} label='Users' dataKey='users' flexGrow={1} cellRenderer={::this.playerUsersRenderer} />
+                    </Table>
+                  } />
+                  <Route path='/admin/player/:uid?' render={(props) =>
+                    <div style={{width: width + 'px'}}>
+                      {hbc.players &&
+                        <PlayerForm initialValues={hbc.players[props.match.params.uid]}
+                                    title={props.match.params.uid ? 'Edit Player' : 'Add New Player'}
+                                    titleStyle={{width:'280px', paddingBottom:'20px'}}
+                                    form={'PlayerForm_' + (props.match.params ? props.match.params.uid : 'new')} {...props} />
+                      }
+                    </div>
+                  } />
+                </Switch>
+              </Route>
+            }
           </AutoSizer>
         </div>
       </div>

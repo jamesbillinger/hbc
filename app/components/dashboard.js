@@ -18,7 +18,7 @@ class Dashboard extends Component {
         <div style={{width:'1000px', maxWidth:'100%', margin:'4vw',
                      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-around'}}>
           <div style={{flex:'2 1 auto'}} />
-          <Logo />
+          <Logo text='Hays Baseball Club' />
           <div style={{flex:'1 0 auto', color:'rgba(0,0,0,0.4)', fontSize:'30px', display:'flex', alignItems:'center'}}>
             <div style={{}}>Respect. Hard work. Fun.</div>
           </div>

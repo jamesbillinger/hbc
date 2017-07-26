@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 class Main extends Component {
   render() {
-    const { user, location, actions, initialLoadComplete } = this.props;
+    const { user, groups, location, actions, initialLoadComplete } = this.props;
     return (
       <header className='header'
            style={{flex:'0 0 60px', display:'flex', alignItems:'center', justifyContent:'space-between',
@@ -29,8 +29,8 @@ class Main extends Component {
         {initialLoadComplete &&
           <nav style={{display:'flex', alignItems:'center'}} className='fadein'>
             {!user && <MenuButton to='/login' location={location} >Log In</MenuButton>}
-            {user && user.admin &&
-              <MenuButton to='/admin' location={location}>Admin</MenuButton>
+            {user && groups && groups.admin[user.uid] &&
+              <MenuButton to='/admin/users' location={location}>Admin</MenuButton>
             }
             {!user && location.pathname !== '/register' &&
               <MenuButton to='/register' location={location}
@@ -57,6 +57,7 @@ class Main extends Component {
 function mapStateToProps(state) {
   return {
     user: state.hbc.user,
+    groups: state.hbc.groups,
     initialLoadComplete: state.hbc.initialLoadComplete
   };
 }

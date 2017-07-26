@@ -24,7 +24,7 @@ class Main extends Component {
   }
 
   render() {
-    const { user, location, initialLoadComplete } = this.props;
+    const { user, groups, location, initialLoadComplete } = this.props;
     return (
       <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
         <Route location={location} key={location.key}>
@@ -58,7 +58,7 @@ class Main extends Component {
               }
             }} />
             <Route path='/admin' render={(props) => {
-              if (user && user.admin) {
+              if (user && groups && groups.admin[user.uid]) {
                 return <Admin {...props} />;
               } else if (initialLoadComplete) {
                 return <Redirect to='/' />;
@@ -86,6 +86,7 @@ class Main extends Component {
 function mapStateToProps(state) {
   return {
     user: state.hbc.user,
+    groups: state.hbc.groups,
     initialLoadComplete: state.hbc.initialLoadComplete
   };
 }

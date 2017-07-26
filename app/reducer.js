@@ -10,7 +10,9 @@ function hbc(state = initialState, action) {
     case 'UPDATE_AUTH':
       return Object.assign({}, state, {
         user: action.err ? undefined : action.user,
+        groups: action.err ? undefined : action.groups,
         authErr: action.err,
+        authEmail: action.email,
         initialLoadComplete: true
       });
 
@@ -35,6 +37,13 @@ function hbc(state = initialState, action) {
           uid: action.uid,
           ...action.update
         })
+      });
+
+    case 'LOAD_AGEGROUPS':
+      return Object.assign({}, state, {
+        ageGroups: action.ageGroups,
+        ageGroupMin: action.min,
+        ageGroupMax: action.max
       });
 
     default:

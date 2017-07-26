@@ -11,49 +11,103 @@ import FormSelect from 'components/formSelect';
 import FormDate from 'components/formDate';
 import Button from 'components/button';
 //import { auth } from 'src/auth';
-import { required, email } from '../validators';
+import { required, email, playerBirthDate, fullName } from '../validators';
 import moment from 'moment';
+import find from 'lodash/find';
+import Logo from 'components/logo';
 
+class DateText extends Component {
+  render() {
+    const { input, ageGroups } = this.props;
+    const { value } = input || {};
+    if (value) {
+      let v = moment(value);
+      let ageGroup = find(ageGroups, (a) => {
+        return v >= a.min && v <= a.max;
+      });
+      if (ageGroup) {
+        return (
+          <div style={{marginLeft: '10px', color: '#8BC34A', fontSize: '13px'}}>
+            Age Group: {ageGroup.label}
+          </div>
+        );
+      } else {
+        return <div />;
+      }
+    } else {
+      return <div />;
+    }
+  }
+}
 
 class PlayerForm extends Component {
   componentWillMount() {
     this._submit = ::this.submit;
+    this._close = ::this.close;
   }
 
   submit(data) {
-    const { actions, initialValues, submitAction, closeAction } = this.props;
+    const { actions, initialValues, submitAction, closeAction, userID } = this.props;
+    if (!data.birthdate) {
+      data.birthdate = moment().subtract(7,'years').valueOf();
+    }
     return new Promise((resolve, revoke) => {
-      if (submitAction) {
-        submitAction(data);
-        resolve();
-      } else if (initialValues) {
+      if (userID) {
+        if (!data.users) {
+          data.users = {
+            [userID]: true
+          };
+        } else if (!data.users[userID]) {
+          data.users[userID] = true;
+        }
+      }
+      if (initialValues && initialValues.uid) {
         actions.updatePlayer(data, () => {
           resolve();
-          closeAction && closeAction();
+          this.close(true);
         });
       } else {
         actions.addPlayer(data, () => {
           resolve();
-          closeAction && closeAction();
+          this.close(true);
         });
       }
     })
   }
 
+  close(data) {
+    const { closeAction, history } = this.props;
+    if (closeAction) {
+      closeAction(data);
+    } else {
+      history.push('/admin/players');
+    }
+  }
+
   render () {
-    const { handleSubmit, pristine, submitting, valid, closeAction, hbc, initialValues } = this.props;
+    const { handleSubmit, pristine, submitting, valid, closeAction, hbc, initialValues,
+      title, titleStyle } = this.props;
     return (
       <form onSubmit={handleSubmit(this._submit)} style={{width:'100%'}}>
+        {title &&
+          <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
+            <div style={Object.assign({padding:'20px 0px 40px 0px'}, titleStyle)}>
+              <Logo text={title} />
+            </div>
+          </div>
+        }
         <div>
-          <Field component={FormInput} name='name' label='Name' validate={[required]} autoFocus={true} />
-          <Field component={FormDate} name='birthdate' label='Birth Date' validate={[]} container='inline'
-                 defaultDate={moment().subtract(7,'years')._d} />
+          <Field component={FormInput} name='name' label='Name' validate={[required, fullName]} autoFocus={true} />
+          <Field component={FormDate} name='birthdate' label='Birth Date' validate={[playerBirthDate(hbc.ageGroupMin, hbc.ageGroupMax)]}
+                 container='inline' defaultDate={moment().subtract(7,'years')._d}
+                 minDate={hbc.ageGroupMin._d} maxDate={hbc.ageGroupMax._d} />
+          <Field component={DateText} name='birthdate' ageGroups={hbc.ageGroups} />
         </div>
         <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
           <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid} primary={true} type='submit'>
             Save
           </Button>
-          <Button onClick={closeAction} disabled={submitting} secondary={true}>
+          <Button onClick={this._close} disabled={submitting} secondary={true}>
             Cancel
           </Button>
         </div>

@@ -9,6 +9,7 @@ import { Field, reduxForm } from 'redux-form';
 import FormInput from 'components/formInput';
 import Button from 'components/button';
 import { required, email } from '../validators';
+import Logo from 'components/logo';
 
 class Login extends Component {
   constructor() {
@@ -17,6 +18,13 @@ class Login extends Component {
 
   componentWillMount() {
     this._submit = ::this.submit;
+  }
+
+  componentDidMount() {
+    const { hbc, change } = this.props;
+    if (hbc.authEmail) {
+      change('email',hbc.authEmail);
+    }
   }
 
   submit(data) {
@@ -33,16 +41,24 @@ class Login extends Component {
   }
 
   render () {
-    const { handleSubmit, pristine, submitting, valid } = this.props;
+    const { handleSubmit, pristine, submitting, valid, hbc } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center', alignItems:'center'}}>
         <form onSubmit={handleSubmit(this._submit)}>
+          <div style={{paddingBottom:'50px'}}>
+            <Logo text='Login' large={true} />
+          </div>
           <div>
-            <Field component={FormInput} name='email' label='Email Address'
+            <Field component={FormInput} name='email' label='Email Address' autoFocus={true}
                    validate={[required, email]} />
             <Field component={FormInput} name='password' label='Password' type='password'
                    validate={[required]} />
+            {hbc.authErr &&
+              <div style={{color:'red', margin:'10px', maxWidth:'256px', fontSize:'14px'}}>
+                {hbc.authErr.message || hbc.authErr.err || hbc.authErr}
+              </div>
+            }
           </div>
           <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
             <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid}

@@ -5,6 +5,12 @@ import React, { Component } from 'react';
 import TextField from "material-ui/TextField";
 
 export default class FormInput extends Component {
+  componentDidMount() {
+    const { autoFocus } = this.props;
+    if (autoFocus) {
+      this._field && this._field.focus();
+    }
+  }
   focus() {
     this._field && this._field.focus();
   }

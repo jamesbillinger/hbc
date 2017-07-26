@@ -18,13 +18,19 @@ class LabelledText extends Component {
 }
 
 class Profile extends Component {
+  componentDidMount() {
+    const { hbc, actions } = this.props;
+    if (!hbc.players) {
+      actions.fetchPlayers();
+    }
+  }
   render() {
-    const { user } = this.props;
+    const { hbc, history } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
-        <div style={{margin:'4vw'}}>
-          <UserForm initialValues={user} />
+        <div style={{margin:'4vw', width:'100%'}}>
+          <UserForm initialValues={hbc.user} title='My Profile' form={'UserForm_' + hbc.user.uid} history={history} />
         </div>
       </div>
     );
@@ -33,7 +39,7 @@ class Profile extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: state.hbc && state.hbc.user
+    hbc: state.hbc
   };
 }
 

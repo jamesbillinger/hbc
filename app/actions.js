@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import config from '../config.json';
 import pick from 'lodash/pick';
+import moment from 'moment';
 
 const firebaseApp = firebase.initializeApp(config.firebase);
 const database = firebaseApp.database();
@@ -15,21 +16,23 @@ export function register(data, callback) {
           if (!user.emailVerified) {
             user.sendEmailVerification();
           }
-          callback && callback(user);
         }
         firebaseRef.child('/users/' + user.uid).push();
         firebaseRef.child('/users/' + user.uid).set({
+          uid: user.uid,
           email: user.email,
           emailVerified: user.emailVerified,
           name: data.name,
           phone: data.phone
         });
+        callback && callback(user);
       })
       .catch((err) => {
         console.log(err);
         dispatch({
           type: 'UPDATE_AUTH',
-          err
+          err,
+          email: data.email
         });
         callback && callback(undefined, err);
       })
@@ -43,36 +46,32 @@ export function onAuthStateChanged(firebaseUser) {
         .then((data) => {
           let user = data.val();
           if (!user) {
-            firebaseRef.child('/users/' + firebaseUser.uid).push();
-          }
-          if (!user || user.email !== firebaseUser.email || user.emailVerified !== firebaseUser.emailVerified) {
-            firebaseRef.child('/users/' + firebaseUser.uid).set({
-              email: firebaseUser.email,
-              emailVerified: firebaseUser.emailVerified
-            });
-          }
-          if (!user) {
             user = {
               uid: firebaseUser.uid,
               email: firebaseUser.email,
               emailVerified: firebaseUser.emailVerified
-            }
+            };
+            firebaseRef.child('/users/' + firebaseUser.uid).push();
+            firebaseRef.child('/users/' + firebaseUser.uid).set(user);
+          } else if (user.email !== firebaseUser.email || user.emailVerified !== firebaseUser.emailVerified) {
+            firebaseRef.child('/users/' + firebaseUser.uid).update({
+              email: firebaseUser.email,
+              emailVerified: firebaseUser.emailVerified
+            });
           }
           //fetch groups and teams
-          firebaseRef.child('/groups/').once('value')
-            .then((data) => {
-              data.forEach((child) => {
-                let v = child.val();
-                console.log(v, child.key);
-                if (v[firebaseUser.uid]) {
-                  user[child.key] = true;
-                }
-              });
-              dispatch({
-                type: 'UPDATE_AUTH',
-                user
-              });
+          firebaseRef.child('/groups/').on('value', (snap) => {
+            let groups = {};
+            snap.forEach((child) => {
+              groups[child.key] = child.val();
             });
+            dispatch({
+              type: 'UPDATE_AUTH',
+              user,
+              groups
+            });
+          });
+          loadAgeGroups(dispatch);
         })
         .catch((err) => {
           console.log(err);
@@ -90,7 +89,6 @@ export function login(email, pw, callback) {
   return dispatch => {
     firebaseAuth().signInWithEmailAndPassword(email, pw)
       .then((user) => {
-        console.log(user);
         callback && callback(user);
       })
       .catch((err) => {
@@ -143,22 +141,10 @@ export function fetchUsers() {
       snap.forEach((child) => {
         users[child.key] = child.val();
       });
-      //fetch groups for user
-      firebaseRef.child('/groups/').once('value')
-        .then((data) => {
-          data.forEach((child) => {
-            let v = child.val();
-            Object.keys(v || {}).map((k) => {
-              if (users[k]) {
-                users[k][child.key] = true;
-              }
-            });
-          });
-          dispatch({
-            type: 'FETCH_USERS',
-            users
-          });
-        });
+      dispatch({
+        type: 'FETCH_USERS',
+        users
+      });
     });
   }
 }
@@ -166,17 +152,18 @@ export function fetchUsers() {
 export function addUser(user, callback) {
   return dispatch => {
     let newRef = firebaseRef.child('/users/').push();
+    let uid = newRef.getKey();
     newRef.set({
-      uid: newRef.getKey(),
+      uid,
       ...user
     });
-    callback && callback();
+    callback && callback(uid);
   }
 }
 
 export function updateUser(user, callback) {
   return dispatch => {
-    firebaseRef.child('/users/' + user.uid).set(pick(user, ['uid','name','phone','email','willingToCoach']));
+    firebaseRef.child('/users/' + user.uid).set(user);
     callback && callback();
   }
 }
@@ -184,6 +171,39 @@ export function updateUser(user, callback) {
 export function deleteUser(uid) {
   return dispatch => {
     firebaseRef.child('/users/' + uid).remove();
+    firebaseRef.child('/teams').once('value').then((snap) => {
+      snap.forEach((child) => {
+        let team = child.val();
+        if (team && team.coaches && team.coaches[uid]) {
+          let coaches = Object.assign({}, team.coaches);
+          delete coaches[uid];
+          child.update({
+            coaches
+          });
+        }
+      });
+      firebaseRef.child('/players').once('value').then((snap) => {
+        snap.forEach((child) => {
+          let player = child.val();
+          if (player && player.user && player.users[uid]) {
+            let users = Object.assign({}, player.users);
+            delete users[uid];
+            child.update({
+              users
+            });
+          }
+        });
+      });
+      firebaseRef.child('/groups').once('value').then((snap) => {
+        snap.forEach((child) => {
+          let group = child.val();
+          if (group && group[uid]) {
+            delete group[uid];
+            child.set(group);
+          }
+        });
+      });
+    });
   }
 }
 
@@ -245,9 +265,10 @@ export function fetchPlayers() {
 
 export function addPlayer(player, callback) {
   return dispatch => {
-    let newRef = firebaseRef.child('/players/').push();
-    newRef.set({
-      uid: newRef.getKey(),
+    let newKey = firebaseRef.child('/players/').push().key;
+    console.log(newKey);
+    firebaseRef.child('/players/' + newKey).set({
+      uid: newKey,
       ...player
     });
     callback && callback();
@@ -264,5 +285,59 @@ export function updatePlayer(player, callback) {
 export function deletePlayer(uid) {
   return dispatch => {
     firebaseRef.child('/players/' + uid).remove();
+    firebaseRef.child('/teams').once('value').then((snap) => {
+      snap.forEach((child) => {
+        let team = child.val();
+        if (team && team.players && team.players[uid]) {
+          let players = Object.assign({}, team.player);
+          delete players[uid];
+          child.update({
+            players
+          });
+        }
+      });
+    });
   }
+}
+
+function loadAgeGroups(dispatch) {
+  let t = moment();
+  let min;
+  let max;
+  if (t.month() > 6 || (t.month() === 6 && t.date() > 4)) {
+    //next year, not this year
+    min = moment().year(t.year() - 10).month(4).date(1).startOf('day');
+    max = moment().year(t.year() - 6).month(3).date(30).endOf('day');
+  } else {
+    //this year
+    min = moment().year(t.year() - 11).month(4).date(1).startOf('day');
+    max = moment().year(t.year() - 7).month(3).date(30).endOf('day');
+  }
+  let ageGroups = [{
+    value: '10u',
+    label: '10U',
+    min: min.clone(),
+    max: min.clone().add(1, 'year').subtract(1,'day').endOf('day')
+  }, {
+    value: '9u',
+    label: '9U',
+    min: min.clone().add(1, 'year'),
+    max: min.clone().add(2, 'year').subtract(1,'day').endOf('day')
+  }, {
+    value: '8u',
+    label: '8U',
+    min: min.clone().add(2, 'year'),
+    max: min.clone().add(3, 'year').subtract(1,'day').endOf('day')
+  }, {
+    value: '7u',
+    label: '7U',
+    min: min.clone().add(3, 'year'),
+    max: min.clone().add(4, 'year').subtract(1,'day').endOf('day')
+  }];
+  dispatch({
+    type: 'LOAD_AGEGROUPS',
+    min,
+    max,
+    ageGroups
+  });
 }

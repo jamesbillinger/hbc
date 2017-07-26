@@ -6,24 +6,28 @@ import sample from 'lodash/sample';
 import shuffle from 'lodash/shuffle';
 import { AutoSizer } from 'react-virtualized';
 
-const s = 'Hays Baseball Club';
-const colors = shuffle([
-  '#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575',
-  '#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575',
-  '#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575'
-]);
-const sizes = shuffle([10,12,14,14,10,10,12,10,12,14,10,12,14,10,10,12,14,10]);
-const textTransforms = [
-  'capitalize','lowercase','none','lowercase',
-  'none',
-  'capitalize','none','none','none','lowercase','initial','inherit','none',
-  'none',
-  'capitalize','lowercase','initial','inherit'
-];
+const colors = ['#689F38','#8BC34A','#DCEDC8','#795548','#212121','#757575'];
+const sizes = [10,12,14,14,10,10,12,10,12,14,10,12,14,10,10,12,14,10];
+const textTransforms = ['lowercase','lowercase','none']; //capitalize
 
 export default class Logo extends Component {
+  componentWillMount() {
+    const { text } = this.props;
+    this._divs = [];
+    text.split(' ').map((w, wi) => {
+      w.split('').map((c, ci) => {
+        this._divs.push({
+          color: sample(colors),
+          size: sample(sizes),
+          textTransform: ci === 0 ? 'none' : sample(textTransforms),
+          character: (ci === 0 && wi > 0) ? <span>&nbsp;{c}</span> : c
+        });
+      });
+    });
+  }
+
   render() {
-    const { history, location } = this.props;
+    const { large } = this.props;
     return (
       <div style={{flex:'1 1 auto', width:'100%'}}>
         <AutoSizer>
@@ -31,19 +35,22 @@ export default class Logo extends Component {
             return (
               <div style={{height:height + 'px', width: width + 'px', display:'flex', alignItems:'center', justifyContent:'center'}}>
                 <div style={{display:'flex', alignItems:'flex-end'}}>
-                  {s.split('').map((c, ci) => {
+                  {this._divs.map((c, ci) => {
+                    let fontSize = width / c.size;
+                    if (large && width < 800) {
+                      fontSize = (width * (800 / width)) / c.size;
+                    }
                     return (
                       <div key={ci}
                            style={{
-                             color: colors[ci],
-                             fontSize: (width / sizes[ci]) + 'px',
-                             textTransform: textTransforms[ci],
+                             color: c.color,
+                             fontSize: fontSize + 'px',
+                             textTransform: c.textTransform,
                              marginRight: '2px',
                              fontWeight:'600',
-                             paddingBottom:(sizes[ci] * 1.3) + 'px'
+                             paddingBottom:(c.size * 1.3) + 'px'
                            }}>
-                        {c}
-                        {c === ' ' && <span>&nbsp;</span>}
+                        {c.character}
                       </div>
                     );
                   })}
