@@ -9,7 +9,7 @@ app.use(express.static('public'));
 app.use(express.static('files'));
 
 var router = express.Router();
-var manifest = require(__dirname + '/public/dist/assets.json');
+var manifest = require(__dirname + '/files/dist/assets.json');
 app.get('/*', function(req, res) {
   res.render('index', {
     NODE_ENV: process.env.NODE_ENV || 'production',
