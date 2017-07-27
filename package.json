@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./webServer.js",
-    "build": "rimraf files/dist/* && webpack --config webpack-prod.config.js --progress"
+    "build": "rimraf files/dist/* && webpack --config webpack-prod.config.js --progress && cp ./files/dist/assets.json ./files/dist/assets.[clock format [clock seconds] -format {%Y-%m-%d_%H-%M-%S}].json"
   },
   "dependencies": {
     "assets-webpack-plugin": "^3.5.1",
