@@ -10,3 +10,12 @@ TODO:
  - require email verification to login?
  - finish About text
  - finish Contact Us page - pictures?
+ - login form return key is not submitting
+
+
+
+To Push:
+ - git pull
+ - npm run build
+ - pm2 reload hbc-web
+ - rm -r /opt/nginx/cache/*

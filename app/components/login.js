@@ -72,6 +72,8 @@ class Login extends Component {
                  style={{padding:'16px 32px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
               Login
             </div>
+            <button style={{height:'0px', width:'0px'}} type='submit' disabled={pristine || submitting || !valid}
+                    onClick={handleSubmit(this._submit)} />
           </div>
           <div style={{display:'flex', justifyContent:'space-between', margin:'30px 10px 0px 10px', alignItems:'center'}}>
             <div className='registerButton'
