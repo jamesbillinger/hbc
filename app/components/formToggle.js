@@ -2,7 +2,7 @@
  * Created by jamesbillinger on 4/18/17.
  */
 import React, { Component } from 'react';
-import Toggle from "material-ui/toggle";
+import Toggle from "material-ui/Toggle";
 
 export default class FormToggle extends Component {
   render() {

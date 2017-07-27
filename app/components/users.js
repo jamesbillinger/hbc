@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import { Column, Table } from 'react-virtualized';
 import Icon from 'components/icon';
-import Toggle from 'material-ui/toggle';
+import Toggle from 'material-ui/Toggle';
 
 class Users extends Component {
   constructor() {
