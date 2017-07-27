@@ -8,6 +8,6 @@ TODO:
  - password reset link
  - forgot password link
  - add sign in with google option?
- - make FAQ dynamic (from admin)
  - footer disappears when page gets long (/about)
  - make tables sortable
+ - mobile responsiveness

@@ -98,6 +98,15 @@ header nav a.active:after{
   transition:all ease .2s;
 }
 
+.registerButton {
+  border: 1px solid rgba(0,0,0,0.1);
+  transition:all ease .2s;
+}
+.registerButton:hover {
+  border: 1px solid rgba(0,0,0,0.5);
+  transition:all ease .2s;
+}
+
 .tabButton {
   color: #8BC34A;
   font-weight: 300;

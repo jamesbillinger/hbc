@@ -14,6 +14,26 @@ import Divider from 'material-ui/Divider';
 import { Link } from 'react-router-dom';
 
 class Main extends Component {
+  componentDidUpdate(prevProps) {
+    const { location } = this.props;
+    if (location.pathname !== prevProps.location.pathname) {
+      let p = location.pathname;
+      if (p === '' || p === '/') {
+        document.title = 'Hays Baseball Club';
+      } else if (p.startsWith('/about')) {
+        document.title = 'Hays Baseball Club - Who and what we are';
+      } else if (p.startsWith('/contact')) {
+        document.title = 'Hays Baseball Club - Contact Us';
+      } else if (p.startsWith('/register')) {
+        document.title = 'Hays Baseball Club - Register';
+      } else if (p.startsWith('/login')) {
+        document.title = 'Hays Baseball Club - Login';
+      } else {
+        document.title = 'Hays Baseball Club - Admin';
+      }
+    }
+  }
+
   render() {
     const { user, groups, location, actions, initialLoadComplete } = this.props;
     return (
@@ -33,8 +53,8 @@ class Main extends Component {
               <MenuButton to='/admin/users' location={location}>Admin</MenuButton>
             }
             {!user && location.pathname !== '/register' &&
-              <MenuButton to='/register' location={location}
-                          style={{padding:'16px 30px', border:'1px solid rgba(0,0,0,0.1)', borderRadius:'30px', color:'#000'}}>
+              <MenuButton to='/register' location={location} className='registerButton'
+                          style={{padding:'16px 30px', borderRadius:'30px', color:'#000'}}>
                 Register
               </MenuButton>
             }
