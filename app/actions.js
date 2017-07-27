@@ -266,7 +266,6 @@ export function fetchPlayers() {
 export function addPlayer(player, callback) {
   return dispatch => {
     let newKey = firebaseRef.child('/players/').push().key;
-    console.log(newKey);
     firebaseRef.child('/players/' + newKey).set({
       uid: newKey,
       ...player
@@ -293,6 +292,58 @@ export function deletePlayer(uid) {
           delete players[uid];
           child.update({
             players
+          });
+        }
+      });
+    });
+  }
+}
+
+
+export function fetchFAQs() {
+  return dispatch => {
+    firebaseRef.child('/faqs/').on('value', (snap) => {
+      let faqs = {};
+      snap.forEach((child) => {
+        faqs[child.key] = child.val();
+      });
+      dispatch({
+        type: 'FETCH_FAQS',
+        faqs
+      });
+    });
+  }
+}
+
+export function addFAQ(faq, callback) {
+  return dispatch => {
+    let newKey = firebaseRef.child('/faqs/').push().key;
+    firebaseRef.child('/faqs/' + newKey).set({
+      uid: newKey,
+      ...faq
+    });
+    callback && callback();
+  }
+}
+
+export function updateFAQ(faq, callback) {
+  return dispatch => {
+    firebaseRef.child('/faqs/' + faq.uid).set(faq);
+    callback && callback();
+  }
+}
+
+export function deleteFAQ(uid) {
+  return dispatch => {
+    firebaseRef.child('/faqs/' + uid).remove();
+    firebaseRef.child('/teams').once('value').then((snap) => {
+      snap.forEach((child) => {
+        let team = child.val();
+        if (team && team.faqs && team.faqs[uid]) {
+          let faqs = Object.assign({}, team.faq);
+          delete faqs[uid];
+          child.update({
+            faqs
           });
         }
       });

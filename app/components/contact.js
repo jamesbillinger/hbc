@@ -30,14 +30,14 @@ export default class Contact extends Component {
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
         <div style={{width:'600px', maxWidth:'100%', margin:'4vw'}}>
-          <p>
+          <p style={{fontSize:'16px', paddingLeft:'10px', lineHeight:'1.5em', color:'rgba(0,0,0,0.8)'}}>
             Our coaches are available to answer questions or assist with registration.<br />Email is preferred.  Thanks!
           </p>
           <div style={{display:'flex', flexWrap:'wrap'}}>
             {coaches.map((c) =>
               <Paper key={c.email} style={{margin:'10px', padding:'25px'}}>
-                <div>{c.name} - {c.ageGroup}</div>
-                <div>{c.email}</div>
+                <h3 style={{margin:'0px', color:'#689F38'}}>{c.name} ({c.ageGroup})</h3>
+                <a href={'mailto:' + c.email} style={{marginTop:'5px'}}>{c.email}</a>
               </Paper>
             )}
           </div>

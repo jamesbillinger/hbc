@@ -1,17 +1,22 @@
 {
-  "name": "cookbook",
+  "name": "hbc",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./webServer.js",
+    "build": "rimraf files/dist/* && webpack --config webpack-prod.config.js --progress"
   },
   "dependencies": {
+    "assets-webpack-plugin": "^3.5.1",
     "babel": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-loader": "^7.1.1",
     "babel-plugin-module-alias": "^1.6.0",
     "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-constant-elements": "^6.23.0",
     "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-0": "^6.22.0",
     "debug": "^2.6.1",
@@ -40,6 +45,7 @@
     "redux": "^3.6.0",
     "redux-form": "^7.0.1",
     "redux-thunk": "^2.2.0",
+    "rimraf": "^2.6.1",
     "style-loader": "^0.18.2",
     "tracer": "^0.8.7",
     "webpack": "^3.3.0",

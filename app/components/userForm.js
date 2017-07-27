@@ -116,7 +116,7 @@ class UserForm extends Component {
           <div style={{display:'flex'}}>
             <div style={{borderRight:'1px solid #ddd', marginRight:'20px', paddingRight:'15px'}}>
               <form onSubmit={handleSubmit(this._submit)}>
-                <h4>My Contact Info</h4>
+                <h3>My Contact Info</h3>
                 <Field component={FormInput} name='name' label='Name'
                        validate={[required]} disabled={!!player} />
                 <Field component={MaskedInput} name='phone' label='Phone' mask='(111) 111-1111'
@@ -138,9 +138,9 @@ class UserForm extends Component {
               </form>
             </div>
             <div style={{flex:'1 1 auto', minWidth:'300px'}}>
-              {initialValues && initialValues.uid && <h4>{playerHeading}</h4>}
+              {initialValues && initialValues.uid && <h3>{playerHeading}</h3>}
               {!player &&
-                <div style={{display:'flex', flexDirection:'column', minHeight:'300px'}}>
+                <div style={{display:'flex', flexDirection:'column', minHeight:'300px', marginTop:'20px'}}>
                   {Object.keys(players || {}).length > 0 &&
                     <div style={{flex: '0 0 auto'}}>
                       {map(players || [], (p, pi) => {

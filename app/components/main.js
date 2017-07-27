@@ -23,6 +23,13 @@ class Main extends Component {
     firebase.auth().onAuthStateChanged(::actions.onAuthStateChanged);
   }
 
+  componentDidMount() {
+    const { actions, faqs } = this.props;
+    if (!faqs) {
+      actions.fetchFAQs();
+    }
+  }
+
   render() {
     const { user, groups, location, initialLoadComplete } = this.props;
     return (
@@ -87,6 +94,7 @@ function mapStateToProps(state) {
   return {
     user: state.hbc.user,
     groups: state.hbc.groups,
+    faqs: state.hbc.faqs,
     initialLoadComplete: state.hbc.initialLoadComplete
   };
 }

@@ -39,7 +39,8 @@ class Main extends Component {
               </MenuButton>
             }
             {user &&
-              <IconMenu iconButtonElement={<Icon icon='account_circle' className='hoverIcon' />} style={{height:'24px'}}
+              <IconMenu iconButtonElement={<Icon icon='account_circle' className='hoverIcon' style={{fontSize:'24px'}} />}
+                        style={{height:'24px'}}
                         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                 <MenuItem primaryText={<Link to='/profile' style={{color:'black'}}>Manage my profile</Link>} />

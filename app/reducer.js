@@ -46,6 +46,11 @@ function hbc(state = initialState, action) {
         ageGroupMax: action.max
       });
 
+    case 'FETCH_FAQS':
+      return Object.assign({}, state, {
+        faqs: action.faqs || {}
+      });
+
     default:
       return state;
   }
