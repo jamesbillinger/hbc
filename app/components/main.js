@@ -16,6 +16,7 @@ import Schedule from 'components/schedule';
 import firebase from 'firebase';
 import Admin from 'components/admin';
 import Profile from 'components/profile';
+import PasswordReset from 'components/passwordReset';
 
 class Main extends Component {
   componentWillMount() {
@@ -33,7 +34,7 @@ class Main extends Component {
   render() {
     const { user, groups, location, initialLoadComplete } = this.props;
     return (
-      <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
+      <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <Route location={location} key={location.key}>
           <Switch>
             <Route exact={true} path='/' render={(props) => <Dashboard {...props} />} />
@@ -53,6 +54,13 @@ class Main extends Component {
                 return <Redirect to='/' />;
               } else {
                 return <Login {...props} />;
+              }
+            }} />
+            <Route path='/password-reset' render={(props) => {
+              if (!initialLoadComplete) {
+                return <div />;
+              } else {
+                return <PasswordReset {...props} />;
               }
             }} />
             <Route path='/register' render={(props) => {

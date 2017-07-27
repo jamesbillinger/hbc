@@ -12,7 +12,7 @@ td {
 }
 .fade-leave.fade-leave-active {
   opacity: 0;
-  transition: opacity 0.2s ease-in;
+  transition: opacity 0.1s ease-in;
 }
 
 .fade-enter {
@@ -20,11 +20,11 @@ td {
 }
 .fade-enter.fade-enter-active {
   opacity: 1;
-  transition: opacity 0.2s ease-in 0.3s;
+  transition: opacity 0.1s ease-in 0.2s;
 }
 
 .fade-height {
-  transition: height .3s ease-in-out;
+  transition: height .2s ease-in-out;
 }
 
 
@@ -83,10 +83,32 @@ header nav a.active:after{
   background-color: #8BC34A;
   transition:all ease .2s;
   font-size:16px;
+  animation: 0.4s ease-out grow;
+  animation-delay: 0.6s;
+  animation-fill-mode: both;
 }
 .dashboardButton:hover {
   background-color: #689F38;
   transition:all ease .2s;
+}
+@keyframes grow {
+  0% {
+    opacity: 0;
+    transform: scaleX(0) translate3d(0, 20px, 0) rotate(9deg);
+  }
+  40% {
+    transform: scaleX(1.2) translate3d(0, 0, 0) rotate(0)
+  }
+  50% {
+    opacity:0.7;
+  }
+  80% {
+    transform: scaleX(0.9) rotate(0)
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1) translate3d(0, 0, 0) rotate(0);
+  }
 }
 
 .hoverIcon {
@@ -105,6 +127,47 @@ header nav a.active:after{
 .registerButton:hover {
   border: 1px solid rgba(0,0,0,0.5);
   transition:all ease .2s;
+}
+
+
+.logo {
+  /*transition: margin-bottom ease-in-out 1s, opacity ease-in 1s;*/
+  animation: 0.5s move ease;
+  animation-fill-mode: both;
+}
+@keyframes move {
+  0% {
+    opacity: 0;
+    transform: translateY(50vh);
+  }
+  50% {
+    opacity:0.8;
+  }
+  70% { transform: translateY(-1vh) }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content {
+  animation: 0.5s appear ease;
+  animation-fill-mode: both;
+  animation-delay: 0.5s;
+}
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: translateY(5vh);
+  }
+  50% {
+    opacity:0.7;
+    transform: translateY(0.5vh)
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tabButton {
@@ -142,9 +205,17 @@ header nav a.active:after{
 
 .fadein {
   animation: fadein 0.5s;
+  animation-fill-mode: both;
+  animation-delay: 0.7s;
   -moz-animation: fadein 0.5s; /* Firefox */
+  -moz-animation-fill-mode: both;
+  -moz-animation-delay: 0.7s;
   -webkit-animation: fadein 0.5s; /* Safari and Chrome */
+  -webkit-animation-fill-mode: both;
+  -webkit-animation-delay: 0.7s;
   -o-animation: fadein 0.5s; /* Opera */
+  -o-animation-fill-mode: both;
+  -o-animation-delay: 0.7s;
 }
 @keyframes fadein {
   from {

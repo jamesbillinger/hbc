@@ -88,28 +88,31 @@ class PlayerForm extends Component {
     const { handleSubmit, pristine, submitting, valid, closeAction, hbc, initialValues,
       title, titleStyle } = this.props;
     return (
-      <form onSubmit={handleSubmit(this._submit)} style={{width:'100%'}}>
-        {title &&
-          <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
-            <div style={Object.assign({padding:'20px 0px 40px 0px'}, titleStyle)}>
-              <Logo text={title} />
-            </div>
-          </div>
-        }
+      <form onSubmit={handleSubmit(this._submit)}
+            style={{display:'flex', justifyContent:'center'}}>
         <div>
-          <Field component={FormInput} name='name' label='Name' validate={[required, fullName]} autoFocus={true} />
-          <Field component={FormDate} name='birthdate' label='Birth Date' validate={[playerBirthDate(hbc.ageGroupMin, hbc.ageGroupMax)]}
-                 container='inline' defaultDate={moment().subtract(7,'years')._d}
-                 minDate={hbc.ageGroupMin._d} maxDate={hbc.ageGroupMax._d} />
-          <Field component={DateText} name='birthdate' ageGroups={hbc.ageGroups} />
-        </div>
-        <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
-          <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid} primary={true} type='submit'>
-            Save
-          </Button>
-          <Button onClick={this._close} disabled={submitting} secondary={true}>
-            Cancel
-          </Button>
+          {title &&
+            <div style={{display:'flex', justifyContent:'center'}}>
+              <div style={Object.assign({height:'40px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column'}, titleStyle)}>
+                <Logo text={title} />
+              </div>
+            </div>
+          }
+          <div className='content'>
+            <Field component={FormInput} name='name' label='Name' validate={[required, fullName]} autoFocus={true} />
+            <Field component={FormDate} name='birthdate' label='Birth Date' validate={[playerBirthDate(hbc.ageGroupMin, hbc.ageGroupMax)]}
+                   container='inline' defaultDate={moment().subtract(7,'years')._d}
+                   minDate={hbc.ageGroupMin._d} maxDate={hbc.ageGroupMax._d} />
+            <Field component={DateText} name='birthdate' ageGroups={hbc.ageGroups} />
+          </div>
+          <div style={{display:'flex', justifyContent:'center', marginTop:'30px', animationDelay:'0.7s'}} className='content'>
+            <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid} primary={true} type='submit'>
+              Save
+            </Button>
+            <Button onClick={this._close} disabled={submitting} secondary={true}>
+              Cancel
+            </Button>
+          </div>
         </div>
       </form>
     );

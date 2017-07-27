@@ -34,21 +34,21 @@ export default class Logo extends Component {
           {({height, width}) => {
             return (
               <div style={{height:height + 'px', width: width + 'px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-                <div style={{display:'flex', alignItems:'flex-end'}}>
+                <div style={{display:'flex', alignItems:'flex-end', height: height + 'px', marginBottom:(height * -.75) + 'px'}}>
                   {this._divs.map((c, ci) => {
                     let fontSize = width / c.size;
                     if (large && width < 800) {
                       fontSize = (width * (800 / width)) / c.size;
                     }
                     return (
-                      <div key={ci}
+                      <div key={ci} className='logo'
                            style={{
                              color: c.color,
                              fontSize: fontSize + 'px',
                              textTransform: c.textTransform,
                              marginRight: '2px',
-                             fontWeight:'600',
-                             paddingBottom:(c.size * 1.3) + 'px'
+                             paddingBottom:(c.size * 1.3) + 'px',
+                             animationDelay: (0.1 + (ci * 0.03)) + 's'
                            }}>
                         {c.character}
                       </div>

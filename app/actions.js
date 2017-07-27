@@ -116,9 +116,16 @@ export function logout() {
   }
 }
 
-export function resetPassword(email) {
+export function resetPassword(email, callback) {
   return dispatch => {
     firebaseAuth().sendPasswordResetEmail(email)
+      .then(() => {
+        callback && callback();
+      })
+      .catch((err) => {
+        console.log(err);
+        callback && callback(undefined, err);
+      })
   }
 }
 

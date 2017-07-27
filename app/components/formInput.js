@@ -28,9 +28,6 @@ export default class FormInput extends Component {
     if (props.disabled) {
       newStyle.color = 'rgba(0,0,0,0.3)';
     }
-    if (props.multiLine) {
-      newStyle.width = '80%';
-    }
     return (
       <TextField ref={(c) => this._field = c} id='unique' style={newStyle} value={value || ''}
                  floatingLabelStyle={{pointerEvents: 'none', whiteSpace:'nowrap', left:'0px', color:'rgba(33, 33, 33, 0.5)'}}

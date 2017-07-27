@@ -10,9 +10,8 @@ import FormInput from 'components/formInput';
 import Button from 'components/button';
 import { required, email } from '../validators';
 import Logo from 'components/logo';
-import { Link } from 'react-router-dom';
 
-class Login extends Component {
+class PasswordReset extends Component {
   constructor() {
     super();
   }
@@ -31,7 +30,7 @@ class Login extends Component {
   submit(data) {
     const { actions } = this.props;
     return new Promise((resolve, revoke) => {
-      actions.login(data.email, data.password, (r, err) => {
+      actions.resetPassword(data.email, (r, err) => {
         if (err) {
           revoke(err);
         } else {
@@ -42,42 +41,25 @@ class Login extends Component {
   }
 
   render () {
-    const { handleSubmit, pristine, submitting, valid, hbc, actions, history } = this.props;
+    const { handleSubmit, pristine, submitting, valid, hbc, actions } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center', alignItems:'center'}}>
         <form onSubmit={handleSubmit(this._submit)}>
           <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
             <div style={{height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column',
-                         marginBottom:'10px'}}>
-              <Logo text='Login' large={true} />
+              marginBottom:'10px'}}>
+              <Logo text='Lost?' large={true} />
             </div>
           </div>
-          <div>
+          <div className='content'>
             <Field component={FormInput} name='email' label='Email Address' autoFocus={true}
-                   validate={[required, email]} style={{width:'300px'}} />
-            <Field component={FormInput} name='password' label='Password' type='password'
-                   validate={[required]} style={{width:'300px'}} />
-            {hbc.authErr &&
-              <div style={{color:'red', margin:'10px', maxWidth:'256px', fontSize:'14px'}}>
-                {hbc.authErr.message || hbc.authErr.err || hbc.authErr}
-              </div>
-            }
+                   validate={[required, email]} />
           </div>
-          <div style={{display:'flex', justifyContent:'space-between', margin:'22px 10px 0px 10px', alignItems:'center'}}>
-            <Link to='/password-reset' style={{color:'#ccc'}}>
-              Forgot your password?
-            </Link>
+          <div style={{display:'flex', justifyContent:'center', margin:'30px 10px 0px 10px'}}>
             <div onClick={handleSubmit(this._submit)} className='dashboardButton'
-                 style={{padding:'16px 32px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
-              Login
-            </div>
-          </div>
-          <div style={{display:'flex', justifyContent:'space-between', margin:'30px 10px 0px 10px', alignItems:'center'}}>
-            <div className='registerButton'
-                 style={{padding:'16px 30px', borderRadius:'30px', color:'#000', width:'100%', textAlign:'center',
-                         fontSize:'16px', cursor:'pointer'}}>
-              Sign in with Google
+                 style={{padding:'16px 25px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
+              Send me my password
             </div>
           </div>
         </form>
@@ -100,8 +82,8 @@ function mapDispatchToProps(dispatch) {
 
 export default reduxForm({
   // a unique name for the form
-  form: 'LoginForm'
+  form: 'PasswordResetForm'
 })(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login))
+)(PasswordReset))

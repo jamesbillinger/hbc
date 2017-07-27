@@ -108,13 +108,15 @@ class UserForm extends Component {
         <div>
           {title &&
             <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
-              <div style={Object.assign({padding:'20px 0px 40px 0px', width:'400px'}, titleStyle)}>
+              <div style={Object.assign({
+                height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column', marginBottom:'10px'
+              }, titleStyle)}>
                 <Logo text={title} />
               </div>
             </div>
           }
           <div style={{display:'flex'}}>
-            <div style={{borderRight:'1px solid #ddd', marginRight:'20px', paddingRight:'15px'}}>
+            <div style={{borderRight:'1px solid #ddd', marginRight:'20px', paddingRight:'15px'}} className='content'>
               <form onSubmit={handleSubmit(this._submit)}>
                 <h3>My Contact Info</h3>
                 <Field component={FormInput} name='name' label='Name'
@@ -137,7 +139,7 @@ class UserForm extends Component {
                 }
               </form>
             </div>
-            <div style={{flex:'1 1 auto', minWidth:'300px'}}>
+            <div style={{flex:'1 1 auto', minWidth:'300px'}} className='content'>
               {initialValues && initialValues.uid && <h3>{playerHeading}</h3>}
               {!player &&
                 <div style={{display:'flex', flexDirection:'column', minHeight:'300px', marginTop:'20px'}}>

@@ -57,29 +57,32 @@ class TeamForm extends Component {
       label: hbc.players[k].name || k
     }));
     return (
-      <form onSubmit={handleSubmit(this._submit)} style={{width:'100%'}}>
-        {title &&
-          <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
-            <div style={Object.assign({padding:'20px 0px 40px 0px'}, titleStyle)}>
-              <Logo text={title} />
-            </div>
-          </div>
-        }
+      <form onSubmit={handleSubmit(this._submit)}
+            style={{display:'flex', justifyContent:'center'}}>
         <div>
-          <Field component={FormInput} name='name' label='Team Name' validate={[required]} />
-          <Field component={FormSelect} name='ageGroup' label='Age Group' validate={[required]} options={hbc.ageGroups || []} />
-          <Field component={FormSelect} name='coaches' label='Coaches' validate={[]} options={coachOptions}
-                 multiple={true} />
-          <Field component={FormSelect} name='players' label='Players' validate={[]} options={playersOptions}
-                 multiple={true} />
-        </div>
-        <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
-          <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid} primary={true} type='submit'>
-            Save
-          </Button>
-          <Button onClick={this._close} disabled={submitting} secondary={true}>
-            Cancel
-          </Button>
+          {title &&
+            <div style={{display:'flex', justifyContent:'center'}}>
+              <div style={Object.assign({height:'40px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column'}, titleStyle)}>
+                <Logo text={title} />
+              </div>
+            </div>
+          }
+          <div className='content'>
+            <Field component={FormInput} name='name' label='Team Name' validate={[required]} />
+            <Field component={FormSelect} name='ageGroup' label='Age Group' validate={[required]} options={hbc.ageGroups || []} />
+            <Field component={FormSelect} name='coaches' label='Coaches' validate={[]} options={coachOptions}
+                   multiple={true} />
+            <Field component={FormSelect} name='players' label='Players' validate={[]} options={playersOptions}
+                   multiple={true} />
+          </div>
+          <div style={{display:'flex', justifyContent:'center', marginTop:'30px', animationDelay:'0.7s'}} className='content'>
+            <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid} primary={true} type='submit'>
+              Save
+            </Button>
+            <Button onClick={this._close} disabled={submitting} secondary={true}>
+              Cancel
+            </Button>
+          </div>
         </div>
       </form>
     );

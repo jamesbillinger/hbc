@@ -1,13 +1,12 @@
 # hbc
 
 TODO:
+ - make tables sortable
+ - verification email formatting
+ - register should register user and then reset their password (sends them password reset email)
+ - animate logo (only in large mode?)
+ - mobile responsiveness
+ - add sign in with google option?
+ - require email verification to login?
  - finish About text
  - finish Contact Us page - pictures?
- - animate logo (only in large mode?)
- - verification email formatting
- - password reset link
- - forgot password link
- - add sign in with google option?
- - footer disappears when page gets long (/about)
- - make tables sortable
- - mobile responsiveness

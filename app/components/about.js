@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import { Link } from 'react-router-dom';
+import Logo from 'components/logo';
 
 const questions = [
   {
@@ -25,20 +26,25 @@ class About extends Component {
     const { history, location, faqs } = this.props;
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center'}}>
-        <div style={{width:'600px', maxWidth:'100%', margin:'4vw'}}>
-          <p>
-            The Hays Baseball Club was created in 2013 as a home for
-          </p>
-          <p>
-            Our mission is to provide an equal opportunity for young men from Hays and the surrounding areas
-            to develop as baseball players; having the chance to complete at a high level while instilling discipline,
-            teamwork, sportsmanship, and integrity.
-          </p>
-          <p>
-            The HBC teaches its players to respect the game, work hard, and play hard.
-          </p>
-          <div style={{paddingBottom:'20px'}}>
+                   display:'flex', justifyContent:'center', overflow:'auto'}}>
+        <div style={{width:'600px', maxWidth:'100%'}}>
+          <div style={{paddingBottom:'20px', height:'60px', display:'flex', flexDirection:'column', width:'100%'}}>
+            <Logo text='About' />
+          </div>
+          <div className='content' style={{animationDelay:'0.5s'}}>
+            <p>
+              The Hays Baseball Club was created in 2013 as a home for
+            </p>
+            <p>
+              Our mission is to provide an equal opportunity for young men from Hays and the surrounding areas
+              to develop as baseball players; having the chance to complete at a high level while instilling discipline,
+              teamwork, sportsmanship, and integrity.
+            </p>
+            <p>
+              The HBC teaches its players to respect the game, work hard, and play hard.
+            </p>
+          </div>
+          <div style={{paddingBottom:'20px', animationDelay:'0.7s'}} className='content'>
             {Object.keys(faqs || {}).map((k) => {
               let q = faqs[k];
               return (

@@ -20,8 +20,10 @@ class Dashboard extends Component {
           <div style={{flex:'3 1 auto'}} />
           <div style={{flex:'1 0 auto', display:'flex', flexDirection:'column', alignItems:'center', minHeight:'300px'}}>
             <Logo text='Hays Baseball Club' />
-            <div style={{flex:'1 0 auto', color:'rgba(0,0,0,0.4)', fontSize:'30px', display:'flex', alignItems:'center'}}>
-              <div style={{}}>Respect. Hard work. Fun.</div>
+            <div style={{flex:'1 0 auto', color:'rgba(0,0,0,0.4)', fontSize:'30px', display:'flex', alignItems:'center',
+                         animationDelay:'0.5s'}}
+                 className='content'>
+              <div>Respect. Hard work. Fun.</div>
             </div>
             <div style={{flex:'1 0 auto', minHeight:'50px'}}>
               {initialLoadComplete &&
@@ -32,8 +34,7 @@ class Dashboard extends Component {
                       View My Profile
                     </MenuButton> :
                     <MenuButton to='/register' location={location} className='dashboardButton'
-                                style={{padding:'16px 50px', border:'none', borderRadius:'30px', color:'white',
-                                  backgroundColor: '#8BC34A'}}>
+                                style={{padding:'16px 50px', border:'none', borderRadius:'30px', color:'white'}}>
                       Sign Up
                     </MenuButton>
                   )}
