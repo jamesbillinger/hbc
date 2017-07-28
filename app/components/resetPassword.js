@@ -7,31 +7,11 @@ import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import { Field, reduxForm } from 'redux-form';
 import FormInput from 'components/formInput';
-import Button from 'components/button';
 import { required, email } from '../validators';
 import Logo from 'components/logo';
 import { Link } from 'react-router-dom';
-import qs from 'query-string';
 
-class GoogleButton extends Component {
-  click() {
-    const { actions, input } = this.props;
-    actions.loginWithGoogle(input && input.value, (user, err) => {});
-  }
-
-  render() {
-    return (
-      <div className='registerButton' onClick={::this.click}
-           style={{padding:'16px 30px', borderRadius:'30px', color:'#000', width:'100%', alignItems:'center',
-             fontSize:'16px', cursor:'pointer', display:'flex', justifyContent:'center'}}>
-        <img src='images/google.svg' height='20px' width='20px' />
-        <div style={{paddingLeft:'10px'}}>Sign in with Google</div>
-      </div>
-    );
-  }
-}
-
-class Login extends Component {
+class ResetPassword extends Component {
   constructor() {
     super();
   }
@@ -50,18 +30,11 @@ class Login extends Component {
   submit(data) {
     const { actions, location } = this.props;
     return new Promise((resolve, revoke) => {
-      actions.login(data.email, data.password, (user, err) => {
+      actions.updateUser(data, (user, err) => {
         if (err) {
           revoke(err);
         } else {
-          let query = qs.parse(location.search);
-          if (query && query.oobCode) {
-            actions.applyActionCode(user.uid, location.search.mode, location.search.oobCode, () => {
-              resolve(user);
-            })
-          } else {
-            resolve(user);
-          }
+          resolve(user);
         }
       });
     });
@@ -76,7 +49,7 @@ class Login extends Component {
           <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
             <div style={{height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column',
                          marginBottom:'10px'}}>
-              <Logo text='Login' large={true} />
+              <Logo text='Reset Password' large={true} />
             </div>
           </div>
           <div>
@@ -125,8 +98,8 @@ function mapDispatchToProps(dispatch) {
 
 export default reduxForm({
   // a unique name for the form
-  form: 'LoginForm'
+  form: 'ResetPasswordForm'
 })(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login))
+)(ResetPassword))

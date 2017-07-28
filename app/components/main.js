@@ -16,7 +16,8 @@ import Schedule from 'components/schedule';
 import firebase from 'firebase';
 import Admin from 'components/admin';
 import Profile from 'components/profile';
-import PasswordReset from 'components/passwordReset';
+import ForgotPassword from 'components/forgotPassword';
+import ResetPassword from 'components/resetPassword';
 import qs from 'query-string';
 
 class Main extends Component {
@@ -45,7 +46,11 @@ class Main extends Component {
     if (!this._handledQuery && user && query && query.oobCode) {
       this._handledQuery = true;
       actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
-        history.push('/profile');
+        if (query.mode === 'resetPassword') {
+          history.push('/resetpassword');
+        } else {
+          history.push('/profile');
+        }
       });
     }
   }
@@ -75,12 +80,22 @@ class Main extends Component {
                 return <Login {...props} />;
               }
             }} />
-            <Route path='/password-reset' render={(props) => {
+            <Route path='/forgotpassword' render={(props) => {
               if (!initialLoadComplete) {
-                return <div />;
+                return <div/>;
               } else {
-                return <PasswordReset {...props} />;
+                return <ForgotPassword {...props} />;
               }
+            }} />
+              <Route path='/resetpassword' render={(props) => {
+                if (!initialLoadComplete) {
+                  return <div />;
+                } else if (user) {
+                  return <ResetPassword {...props} initialValues={user}/>;
+                } else {
+                  return <Redirect to='/login' />;
+                }
+              }} />
             }} />
             <Route path='/register' render={(props) => {
               if (!initialLoadComplete) {
