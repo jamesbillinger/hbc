@@ -42,6 +42,12 @@ export function register(data, callback) {
 export function onAuthStateChanged(firebaseUser) {
   return dispatch => {
     if (firebaseUser) {
+      firebaseAuth().currentUser.getToken()
+        .then((token) => {
+          global.token = token;
+        }).catch((err) => {
+          console.log(err);
+        });
       firebaseRef.child('/users/' + firebaseUser.uid).once('value')
         .then((data) => {
           let user = data.val();
@@ -210,6 +216,19 @@ export function deleteUser(uid) {
           }
         });
       });
+      fetch('/user/' + uid, {
+        headers: {
+          'x-access-token': global.token
+        },
+        method: 'DELETE'
+      })
+        .then(response => response.json())
+        .then(err => {
+          console.log(err);
+        })
+        .catch(ex => {
+          console.log(ex);
+        });
     });
   }
 }

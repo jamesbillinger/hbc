@@ -10,3 +10,4 @@ public/dist
 node_modules/
 webpack_cache/
 config.json
+haysbaseballclub.json
