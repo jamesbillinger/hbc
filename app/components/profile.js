@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import FormInput from './formInput';
 import UserForm from './userForm';
+import qs from 'query-string';
 
 class LabelledText extends Component {
   render() {
@@ -38,13 +39,18 @@ class Profile extends Component {
   }
 
   render() {
-    const { hbc, history } = this.props;
+    const { hbc, history, location } = this.props;
     const { sent } = this.state;
+    let oobCode = false;
+    let query = qs.parse(location.search);
+    if (hbc.user && query && query.oobCode) {
+      oobCode = true;
+    }
     return (
       <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
                    display:'flex', justifyContent:'center'}}>
         <div style={{margin:'4vw', width:'100%'}}>
-          {hbc.user.emailVerified
+          {!oobCode && (hbc.user.emailVerified
             ? <UserForm initialValues={hbc.user} title='My Profile' form={'UserForm_' + hbc.user.uid} history={history}/>
             : <div style={{display:'flex', justifyContent:'center'}}>
                 <div style={{maxWidth:'400px'}}>
@@ -69,7 +75,7 @@ class Profile extends Component {
                   }
                 </div>
               </div>
-          }
+          )}
         </div>
       </div>
     );

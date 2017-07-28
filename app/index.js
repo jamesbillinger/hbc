@@ -36,8 +36,8 @@ class App extends Component {
             <div style={{height:'100%', display:'flex', flexDirection:'column', color:'#212121', fontFamily:'sans-serif'}}>
               <Route component={TopMenu} />
               <div style={{flex:'1 1 auto', width:'100%', position:'relative', minHeight:'400px'}}>
-                <Route render={({ location }) => (
-                  <Main location={location} />
+                <Route render={(props) => (
+                  <Main {...props} />
                 )} />
               </div>
               <div style={{flex:'0 0 40px', color:'#ddd', fontSize:'12px',

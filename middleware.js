@@ -70,7 +70,6 @@ exports.requireUser = function(admin, group) {
   return function(req, res, next) {
     let token = req.headers['x-access-token'] || (req.body && req.body.token) || (req.query && req.query.token) || req.params.token;
     if (token) {
-      let token = req.body.token || req.query.token || req.headers['x-access-token'];
       admin.auth().verifyIdToken(token)
         .then((decodedToken) => {
           let uid = decodedToken.uid;

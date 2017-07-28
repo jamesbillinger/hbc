@@ -10,10 +10,13 @@ function hbc(state = initialState, action) {
     case 'UPDATE_AUTH':
       return Object.assign({}, state, {
         user: action.err ? undefined : action.user,
-        groups: action.err ? undefined : action.groups,
         authErr: action.err,
         authEmail: action.email,
         initialLoadComplete: true
+      });
+    case 'FETCH_GROUPS':
+      return Object.assign({}, state, {
+        groups: action.groups || {}
       });
 
     case 'FETCH_USERS':

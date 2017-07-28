@@ -17,7 +17,7 @@ import firebase from 'firebase';
 import Admin from 'components/admin';
 import Profile from 'components/profile';
 import PasswordReset from 'components/passwordReset';
-import qs from 'query-string'
+import qs from 'query-string';
 
 class Main extends Component {
   componentWillMount() {
@@ -26,14 +26,32 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { actions, faqs } = this.props;
+    const { actions, faqs, location, history, user } = this.props;
     if (!faqs) {
       actions.fetchFAQs();
+    }
+    let query = qs.parse(location.search);
+    if (user && query && query.oobCode) {
+      this._handledQuery = true;
+      actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
+        history.push('/profile');
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { location, user, actions, history } = this.props;
+    let query = qs.parse(location.search);
+    if (!this._handledQuery && user && query && query.oobCode) {
+      this._handledQuery = true;
+      actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
+        history.push('/profile');
+      });
     }
   }
 
   render() {
-    const { user, groups, location, initialLoadComplete, actions } = this.props;
+    const { user, groups, location, initialLoadComplete, actions, history } = this.props;
     return (
       <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <Route location={location} key={location.key}>
@@ -89,27 +107,6 @@ class Main extends Component {
                 return <Redirect to='/' />;
               } else {
                 return <div />;
-              }
-            }} />
-            <Route path='/validate' render={(props) => {
-              if (!initialLoadComplete) {
-                return <div/>;
-              } else if (user) {
-                if (user.emailVerified) {
-                  return <Redirect to='/profile'/>;
-                } else {
-                  let query = qs.parse(props.location.search);
-                  if (query && query.oobCode) {
-                    actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
-                      props.history.push('/profile');
-                    });
-                    return <div />;
-                  } else {
-                    return <Redirect to='/profile'/>;
-                  }
-                }
-              } else {
-                return <Redirect to='/login' search={props.location.search} />;
               }
             }} />
             <Route render={() => <div />} />

@@ -17,15 +17,14 @@ export function register(data, callback) {
           if (!user.emailVerified) {
             user.sendEmailVerification();
           }
+          firebaseRef.child('/users/' + user.uid).set({
+            uid: user.uid,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            name: data.name,
+            phone: data.phone
+          });
         }
-        firebaseRef.child('/users/' + user.uid).push();
-        firebaseRef.child('/users/' + user.uid).set({
-          uid: user.uid,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          name: data.name,
-          phone: data.phone
-        });
         callback && callback(user);
       })
       .catch((err) => {
@@ -62,40 +61,37 @@ export function onAuthStateChanged(firebaseUser) {
         }).catch((err) => {
           console.log(err);
         });
-      firebaseRef.child('/users/' + firebaseUser.uid).once('value')
-        .then((data) => {
+      firebaseRef.child('/users/' + firebaseUser.uid).on('value', (data) => {
           let user = data.val();
           if (!user) {
-            user = {
+            firebaseRef.child('/users/' + firebaseUser.uid).set({
               uid: firebaseUser.uid,
               email: firebaseUser.email,
               emailVerified: firebaseUser.emailVerified
-            };
-            firebaseRef.child('/users/' + firebaseUser.uid).push();
-            firebaseRef.child('/users/' + firebaseUser.uid).set(user);
-          } else if (user.email !== firebaseUser.email || user.emailVerified !== firebaseUser.emailVerified) {
+            });
+          } else if (user.email !== firebaseUser.email || (!user.emailVerified && firebaseUser.emailVerified)) {
             firebaseRef.child('/users/' + firebaseUser.uid).update({
               email: firebaseUser.email,
               emailVerified: firebaseUser.emailVerified
             });
-          }
-          //fetch groups and teams
-          firebaseRef.child('/groups/').on('value', (snap) => {
-            let groups = {};
-            snap.forEach((child) => {
-              groups[child.key] = child.val();
-            });
+          } else {
             dispatch({
               type: 'UPDATE_AUTH',
-              user,
-              groups
+              user
             });
-          });
-          loadAgeGroups(dispatch);
-        })
-        .catch((err) => {
-          console.log(err);
+          }
         });
+      firebaseRef.child('/groups/').on('value', (snap) => {
+        let groups = {};
+        snap.forEach((child) => {
+          groups[child.key] = child.val();
+        });
+        dispatch({
+          type: 'FETCH_GROUPS',
+          groups
+        });
+      });
+      loadAgeGroups(dispatch);
     } else {
       dispatch({
         type: 'UPDATE_AUTH',
@@ -159,19 +155,32 @@ export function applyActionCode(uid, mode, oobCode, callback) {
   return dispatch => {
     if (mode === 'verifyEmail') {
       if (firebaseAuth().currentUser.emailVerified) {
-        updateUser({
-          uid,
+        firebaseRef.child('/users/' + uid).update({
           emailVerified: true
-        }, callback);
+        });
+        callback && callback();
+      } else {
+        firebaseAuth().applyActionCode(oobCode)
+          .then(() => {
+            if (mode === 'verifyEmail') {
+              firebaseRef.child('/users/' + uid).update({
+                emailVerified: true
+              });
+            }
+            callback && callback();
+          })
+          .catch((err) => {
+            console.log(err);
+            callback && callback(err);
+          })
       }
     } else {
       firebaseAuth().applyActionCode(oobCode)
         .then(() => {
           if (mode === 'verifyEmail') {
-            updateUser({
-              uid,
+            firebaseRef.child('/users/' + uid).update({
               emailVerified: true
-            }, callback);
+            });
           }
           callback && callback();
         })
@@ -265,7 +274,7 @@ export function addUser(user, callback) {
 
 export function updateUser(user, callback) {
   return dispatch => {
-    firebaseRef.child('/users/' + user.uid).set(user);
+    firebaseRef.child('/users/' + user.uid).update(user);
     callback && callback();
   }
 }
