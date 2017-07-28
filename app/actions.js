@@ -303,7 +303,6 @@ export function deleteUser(uid) {
         }
       });
     });
-    console.log('here1');
     firebaseRef.child('/players').once('value').then((snap) => {
       snap.forEach((child) => {
         let player = child.val();
@@ -316,7 +315,6 @@ export function deleteUser(uid) {
         }
       });
     });
-    console.log('here2');
     firebaseRef.child('/groups').once('value').then((snap) => {
       snap.forEach((child) => {
         let group = child.val();
@@ -326,17 +324,15 @@ export function deleteUser(uid) {
         }
       });
     });
-    console.log('here3');
     fetch('/user/' + uid, {
       headers: {
-        'x-access-token': global.token
+        'x-access-token': global.token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       method: 'DELETE'
     })
-      .then(response => {
-        console.log(response);
-        response.json()
-      })
+      .then(response => response.json())
       .then(err => {
         console.log('deleted user', err);
       })

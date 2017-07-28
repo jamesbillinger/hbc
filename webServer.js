@@ -63,10 +63,10 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
   log('deleting user', req.params.uid);
   admin.auth().deleteUser(req.params.uid)
     .then((userRecord) => {
-      res.apiResponse();
+      res.apiResponse('ok');
     })
     .catch((err) => {
-      res.apiResponse(err);
+      res.apiError(err);
     });
 });
 app.post('/register', middleware.api, (req, res) => {
