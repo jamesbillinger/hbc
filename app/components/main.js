@@ -17,6 +17,7 @@ import firebase from 'firebase';
 import Admin from 'components/admin';
 import Profile from 'components/profile';
 import PasswordReset from 'components/passwordReset';
+import qs from 'query-string'
 
 class Main extends Component {
   componentWillMount() {
@@ -97,10 +98,12 @@ class Main extends Component {
                 if (user.emailVerified) {
                   return <Redirect to='/profile'/>;
                 } else {
-                  if (props.search && props.search.oobCode) {
-                    actions.applyActionCode(user.uid, props.search.mode, props.search.oobCode, () => {
-                      return <Redirect to='/profile'/>;
-                    })
+                  let query = qs.parse(props.location.search);
+                  if (query && query.oobCode) {
+                    actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
+                      props.history.push('/profile');
+                    });
+                    return <div />;
                   } else {
                     return <Redirect to='/profile'/>;
                   }

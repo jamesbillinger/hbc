@@ -55,8 +55,7 @@ export function resendEmailVerification(user, callback) {
 export function onAuthStateChanged(firebaseUser) {
   return dispatch => {
     if (firebaseUser) {
-      console.log(firebaseUser);
-      firebaseAuth().currentUser.getToken()
+      firebaseAuth().currentUser.getIdToken()
         .then((token) => {
           global.token = token;
         }).catch((err) => {
@@ -124,20 +123,29 @@ export function login(email, pw, callback) {
 
 export function applyActionCode(uid, mode, oobCode, callback) {
   return dispatch => {
-    firebaseAuth().applyActionCode(oobCode)
-      .then(() => {
-        if (mode === 'verifyEmail') {
-          updateUser({
-            uid,
-            emailVerified: true
-          }, callback);
-        }
-        callback && callback();
-      })
-      .catch((err) => {
-        console.log(err);
-        callback && callback(err);
-      })
+    if (mode === 'verifyEmail') {
+      if (firebaseAuth().currentUser.emailVerified) {
+        updateUser({
+          uid,
+          emailVerified: true
+        }, callback);
+      }
+    } else {
+      firebaseAuth().applyActionCode(oobCode)
+        .then(() => {
+          if (mode === 'verifyEmail') {
+            updateUser({
+              uid,
+              emailVerified: true
+            }, callback);
+          }
+          callback && callback();
+        })
+        .catch((err) => {
+          console.log(err);
+          callback && callback(err);
+        })
+    }
   }
 }
 

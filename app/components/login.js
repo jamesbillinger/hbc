@@ -11,6 +11,7 @@ import Button from 'components/button';
 import { required, email } from '../validators';
 import Logo from 'components/logo';
 import { Link } from 'react-router-dom';
+import qs from 'query-string';
 
 class Login extends Component {
   constructor() {
@@ -35,7 +36,8 @@ class Login extends Component {
         if (err) {
           revoke(err);
         } else {
-          if (location.search && location.search.mode === 'verifyEmail' && location.search.oobCode) {
+          let query = qs.parse(location.search);
+          if (query && query.oobCode) {
             actions.applyActionCode(user.uid, location.search.mode, location.search.oobCode, () => {
               resolve(user);
             })
