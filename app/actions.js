@@ -210,15 +210,13 @@ export function resetPassword(email, callback) {
   }
 }
 
-export function setUserGroup(uid, group, value, callback) {
+export function setUserGroup(uid, group, value, groups, callback) {
   return dispatch => {
-    firebaseRef.child('/groups/' + group + '/' + uid).push();
-    firebaseRef.child('/groups/' + group + '/' + uid).set(value);
-    dispatch({
-      type:'UPDATE_USER',
-      uid,
-      update: { [group]: value }
-    });
+    if (groups && groups[group] && groups[group][uid]) {
+      firebaseRef.child('/groups/' + group + '/' + uid).set(value);
+    } else {
+      firebaseRef.child('/groups/' + group + '/' + uid).push(value);
+    }
   }
 }
 

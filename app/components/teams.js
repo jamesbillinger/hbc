@@ -33,13 +33,17 @@ class Teams extends Component {
 
   teamClick({ index, rowData }) {
     const { history } = this.props;
-    history.push('/admin/team/' + rowData.uid);
+    if (!(event.target && event.target.id === 'clickable')
+      && !(event.target && event.target.parentElement && event.target.parentElement.id === 'clickable')
+      && !(event.target && event.target.parentElement && event.target.parentElement.parentElement && event.target.parentElement.parentElement.id === 'clickable')) {
+      history.push('/admin/team/' + rowData.uid);
+    }
   }
 
   deleteRenderer(type, {cellData, rowData}) {
     const { actions } = this.props;
     return (
-      <Icon icon='delete' secondary={true} style={{fontSize:'22px'}} onClick={(e) => {
+      <Icon id='clickable' icon='delete' secondary={true} style={{fontSize:'22px'}} onClick={(e) => {
         e.preventDefault();
         if (confirm('Are you sure that you want to delete this ' + type + '?')) {
           actions['delete' + type](cellData);
