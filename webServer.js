@@ -69,7 +69,7 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
     });
 });
 app.get('/validate', middleware.api, (req, res) => {
-  let mode = req.query.type;
+  let mode = req.query.mode;
   let oobCode = req.query.oobCode;
   log(mode, oobCode);
   if (mode && oobCode && mode === 'verifyEmail') {
