@@ -39,6 +39,19 @@ export function register(data, callback) {
   }
 }
 
+export function resendEmailVerification(user, callback) {
+  return dispatch => {
+    user.sendEmailVerification()
+      .then(() => {
+        callback && callback();
+      })
+      .catch((err) => {
+        console.log(err);
+        callback && callback(err);
+      });
+  }
+}
+
 export function onAuthStateChanged(firebaseUser) {
   return dispatch => {
     if (firebaseUser) {

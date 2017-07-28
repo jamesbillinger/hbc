@@ -27,21 +27,41 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
     });
 });
 app.get('/validate', middleware.api, (req, res) => {
-  admin.auth().updateUser(uid, {
-    emailVerified: true
-  })
-    .then((userRecord) => {
-      res.render('index', {
-        NODE_ENV: process.env.NODE_ENV || 'production',
-        chunk: manifest && manifest.app && manifest.app.js
-      });
-    })
-    .catch((err) => {
-      res.render('index', {
-        NODE_ENV: process.env.NODE_ENV || 'production',
-        chunk: manifest && manifest.app && manifest.app.js
-      });
+  let mode = req.query.type;
+  let oobCode = req.query.oobCode;
+  if (mode && oobCode && mode === 'verifyEmail') {
+    admin.auth().applyActionCode(oobCode)
+      .then(() => {
+        admin.auth().updateUser(uid, {
+          emailVerified: true
+        })
+          .then((userRecord) => {
+            res.render('index', {
+              NODE_ENV: process.env.NODE_ENV || 'production',
+              chunk: manifest && manifest.app && manifest.app.js
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.render('index', {
+              NODE_ENV: process.env.NODE_ENV || 'production',
+              chunk: manifest && manifest.app && manifest.app.js
+            });
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.render('index', {
+          NODE_ENV: process.env.NODE_ENV || 'production',
+          chunk: manifest && manifest.app && manifest.app.js
+        });
+      })
+  } else {
+    res.render('index', {
+      NODE_ENV: process.env.NODE_ENV || 'production',
+      chunk: manifest && manifest.app && manifest.app.js
     });
+  }
 });
 app.post('/register', middleware.api, (req, res) => {
   admin.auth().getUserByEmail(req.body.email)
