@@ -55,6 +55,7 @@ export function resendEmailVerification(user, callback) {
 export function onAuthStateChanged(firebaseUser) {
   return dispatch => {
     if (firebaseUser) {
+      console.log(firebaseUser);
       firebaseAuth().currentUser.getToken()
         .then((token) => {
           global.token = token;

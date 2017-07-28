@@ -90,6 +90,15 @@ class Main extends Component {
                 return <div />;
               }
             }} />
+            <Route path='/validate' render={(props) => {
+              if (!initialLoadComplete) {
+                return <div/>;
+              } else if (user) {
+                return <Redirect to='/profile' />;
+              } else {
+                return <Redirect to='/login' />;
+              }
+            }} />
             <Route render={() => <div />} />
           </Switch>
         </Route>

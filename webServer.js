@@ -3,12 +3,54 @@
  */
 require('babel-core/register')();
 let express = require('express');
+let winston = require('winston');
+let expressWinston = require('express-winston');
+let tracer = require('tracer');
 
 let app = express();
 app.use(express.static('public'));
 app.use(express.static('files'));
-let middleware = require('./middleware');
 
+
+global.logger = tracer.console();
+global.log = tracer.console().log;
+global.info = tracer.console().info;
+global.trace = tracer.console().trace;
+global.debug = tracer.console().debug;
+global.warn = tracer.console().warn;
+global.error = tracer.console().error;
+if (process.env.NODE_ENV !== 'development') {
+  var msg = [
+    '{{(req.headers && req.headers["x-forwarded-for"]) || (req.connection && req.connection.remoteAddress) || "-"}}',
+    '-',
+    '{{[new Date()]}}',//custom
+    '{{req.user && req.user.email || "-"}}',//custom
+    //'{{req._httpAuthInfo && req._httpAuthInfo.name || "-"}}',
+    //'[{{req._clfDate || "-"}}]',
+    '"{{req.method}} {{req.originalUrl || req.url}} HTTP/{{req.httpVersion}}"',
+    //'{{res.statusCode || "-"}}',
+    //'{{res._headers && res._headers["content-length"] || "-"}}',
+    //'"{{req.headers.referer || req.headers.referrer || "-"}}"',
+    //'"{{req.headers["user-agent"] || "-"}}"',
+    //'{{res.responseTime || "-"}}ms'
+  ].join(' ');
+
+  //log(msg);
+  app.use(expressWinston.logger({
+    transports: [
+      new winston.transports.Console({
+        json: false,
+        colorize: true
+      })
+    ],
+    meta: false,
+    msg: msg,
+    expressFormat: false,
+    colorize: true
+  }));
+}
+
+let middleware = require('./middleware');
 let manifest = require(__dirname + '/files/dist/assets.json');
 
 let admin = require('firebase-admin');
@@ -29,6 +71,7 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
 app.get('/validate', middleware.api, (req, res) => {
   let mode = req.query.type;
   let oobCode = req.query.oobCode;
+  log(mode, oobCode);
   if (mode && oobCode && mode === 'verifyEmail') {
     admin.auth().applyActionCode(oobCode)
       .then(() => {

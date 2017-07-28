@@ -46,14 +46,25 @@ class Profile extends Component {
         <div style={{margin:'4vw', width:'100%'}}>
           {hbc.user.emailVerified
             ? <UserForm initialValues={hbc.user} title='My Profile' form={'UserForm_' + hbc.user.uid} history={history}/>
-            : <div>
-                {!sent && <div>Please verify your account by clicking on the link in the email you received from Hays Baseball Club.</div>}
-                {sent && <div>The email has been resent.  Please click on the link in the email to verify your account</div>}
-                <div>
+            : <div style={{display:'flex', justifyContent:'center'}}>
+                <div style={{maxWidth:'400px'}}>
                   {!sent &&
-                    <div onClick={this.resend} className='dashboardButton'
-                         style={{padding:'16px 25px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
-                      Resend Verification Email
+                    <div style={{color:'rgba(0,0,0,0.7)'}}>
+                      You should have received an email from Hays Baseball Club.
+                      Please verify your account by clicking on the link provided in the email.
+                    </div>
+                  }
+                  {!sent &&
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
+                      <div onClick={this.resend} className='dashboardButton'
+                           style={{padding:'16px 25px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
+                        Resend Verification Email
+                      </div>
+                    </div>
+                  }
+                  {sent &&
+                    <div style={{color:'rgba(0,0,0,0.7)'}}>
+                      The email has been resent.  Please click on the link in the email to verify your account.
                     </div>
                   }
                 </div>
