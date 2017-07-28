@@ -101,7 +101,7 @@ class PlayerForm extends Component {
           <div className='content'>
             <Field component={FormInput} name='name' label='Name' validate={[required, fullName]} autoFocus={true} />
             <Field component={FormDate} name='birthdate' label='Birth Date' validate={[playerBirthDate(hbc.ageGroupMin, hbc.ageGroupMax)]}
-                   container='inline' defaultDate={moment().subtract(7,'years')._d}
+                   defaultDate={moment().subtract(7,'years')._d}
                    minDate={hbc.ageGroupMin._d} maxDate={hbc.ageGroupMax._d} />
             <Field component={DateText} name='birthdate' ageGroups={hbc.ageGroups} />
           </div>
