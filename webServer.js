@@ -68,7 +68,7 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
       res.apiResponse(err);
     });
 });
-app.get('/validate', middleware.api, (req, res) => {
+/*app.get('/validate', middleware.api, (req, res) => {
   let mode = req.query.mode;
   let oobCode = req.query.oobCode;
   log(mode, oobCode);
@@ -105,7 +105,7 @@ app.get('/validate', middleware.api, (req, res) => {
       chunk: manifest && manifest.app && manifest.app.js
     });
   }
-});
+});*/
 app.post('/register', middleware.api, (req, res) => {
   admin.auth().getUserByEmail(req.body.email)
     .then((userRecord) => {

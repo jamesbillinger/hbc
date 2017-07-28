@@ -122,6 +122,25 @@ export function login(email, pw, callback) {
   }
 }
 
+export function applyActionCode(uid, mode, oobCode, callback) {
+  return dispatch => {
+    firebaseAuth().applyActionCode(oobCode)
+      .then(() => {
+        if (mode === 'verifyEmail') {
+          updateUser({
+            uid,
+            emailVerified: true
+          }, callback);
+        }
+        callback && callback();
+      })
+      .catch((err) => {
+        console.log(err);
+        callback && callback(err);
+      })
+  }
+}
+
 export function logout() {
   return dispatch => {
     firebaseAuth().signOut()

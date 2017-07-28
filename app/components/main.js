@@ -32,7 +32,7 @@ class Main extends Component {
   }
 
   render() {
-    const { user, groups, location, initialLoadComplete } = this.props;
+    const { user, groups, location, initialLoadComplete, actions } = this.props;
     return (
       <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <Route location={location} key={location.key}>
@@ -94,9 +94,19 @@ class Main extends Component {
               if (!initialLoadComplete) {
                 return <div/>;
               } else if (user) {
-                return <Redirect to='/profile' />;
+                if (user.emailVerified) {
+                  return <Redirect to='/profile'/>;
+                } else {
+                  if (props.search && props.search.oobCode) {
+                    actions.applyActionCode(user.uid, props.search.mode, props.search.oobCode, () => {
+                      return <Redirect to='/profile'/>;
+                    })
+                  } else {
+                    return <Redirect to='/profile'/>;
+                  }
+                }
               } else {
-                return <Redirect to='/login' />;
+                return <Redirect to='/login' search={props.location.search} />;
               }
             }} />
             <Route render={() => <div />} />

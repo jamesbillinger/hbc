@@ -29,13 +29,19 @@ class Login extends Component {
   }
 
   submit(data) {
-    const { actions } = this.props;
+    const { actions, location } = this.props;
     return new Promise((resolve, revoke) => {
-      actions.login(data.email, data.password, (r, err) => {
+      actions.login(data.email, data.password, (user, err) => {
         if (err) {
           revoke(err);
         } else {
-          resolve(r);
+          if (location.search && location.search.mode === 'verifyEmail' && location.search.oobCode) {
+            actions.applyActionCode(user.uid, location.search.mode, location.search.oobCode, () => {
+              resolve(user);
+            })
+          } else {
+            resolve(user);
+          }
         }
       });
     })
