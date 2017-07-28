@@ -1,17 +1,11 @@
 # hbc
 
 TODO:
- - make tables sortable
- - verification email formatting
- - register should register user and then reset their password (sends them password reset email)
- - action link in verification email should direct to hbc url that verifies email and sends user to profile page
- - animate logo (only in large mode?)
  - mobile responsiveness
- - add sign in with google option?
- - require email verification to login?
- - finish About text
- - finish Contact Us page - pictures?
- - login form return key is not submitting
+  -
+ - finish Contact Us page - pictures, phone numbers?  Pull from coaches table?
+ - make tables sortable
+ - add new user should send them reset email password
 
 
 

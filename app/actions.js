@@ -7,6 +7,7 @@ const firebaseApp = firebase.initializeApp(config.firebase);
 const database = firebaseApp.database();
 const firebaseRef = database.ref();
 const firebaseAuth = firebase.auth;
+let provider = new firebase.auth.GoogleAuthProvider();
 
 export function register(data, callback) {
   return dispatch => {
@@ -121,6 +122,39 @@ export function login(email, pw, callback) {
   }
 }
 
+export function loginWithGoogle(email, callback) {
+  return dispatch => {
+    if (email) {
+      provider.setCustomParameters({
+        'login_hint': email
+      });
+    }
+    firebaseAuth().signInWithRedirect(provider);
+    firebaseAuth().getRedirectResult().then((result) => {
+      if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        //var token = result.credential.accessToken;
+      }
+      let user = result.user;
+      callback && callback(user);
+    }).catch((err) => {
+      // Handle Errors here.
+      var errorCode = err.code;
+      var errorMessage = err.message;
+      // The email of the user's account used.
+      var email = err.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = err.credential;
+      console.log(err);
+      dispatch({
+        type: 'UPDATE_AUTH',
+        err
+      });
+      callback && callback(undefined, err);
+    });
+  }
+}
+
 export function applyActionCode(uid, mode, oobCode, callback) {
   return dispatch => {
     if (mode === 'verifyEmail') {
@@ -205,13 +239,29 @@ export function fetchUsers() {
 
 export function addUser(user, callback) {
   return dispatch => {
-    let newRef = firebaseRef.child('/users/').push();
-    let uid = newRef.getKey();
-    newRef.set({
-      uid,
-      ...user
-    });
-    callback && callback(uid);
+    fetch('/adduser', {
+      'x-access-token': global.token,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      method: 'POST',
+      body: JSON.stringify(user)
+    })
+      .then(response => response.json())
+      .then(json => {
+        if (json.userRecord) {
+          firebaseRef.child('/users/' + json.userRecord.uid).push({
+            uid,
+            ...user
+          });
+          callback && callback(json.userRecord.uid);
+        } else {
+          callback && callback(undefined, {error: 'No user returned'});
+        }
+      })
+      .catch(ex => {
+        console.log(ex);
+        callback && callback(undefined, ex);
+      });
   }
 }
 

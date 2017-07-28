@@ -68,72 +68,18 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
       res.apiResponse(err);
     });
 });
-/*app.get('/validate', middleware.api, (req, res) => {
-  let mode = req.query.mode;
-  let oobCode = req.query.oobCode;
-  log(mode, oobCode);
-  if (mode && oobCode && mode === 'verifyEmail') {
-    admin.auth().applyActionCode(oobCode)
-      .then(() => {
-        admin.auth().updateUser(uid, {
-          emailVerified: true
-        })
-          .then((userRecord) => {
-            res.render('index', {
-              NODE_ENV: process.env.NODE_ENV || 'production',
-              chunk: manifest && manifest.app && manifest.app.js
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            res.render('index', {
-              NODE_ENV: process.env.NODE_ENV || 'production',
-              chunk: manifest && manifest.app && manifest.app.js
-            });
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.render('index', {
-          NODE_ENV: process.env.NODE_ENV || 'production',
-          chunk: manifest && manifest.app && manifest.app.js
-        });
-      })
-  } else {
-    res.render('index', {
-      NODE_ENV: process.env.NODE_ENV || 'production',
-      chunk: manifest && manifest.app && manifest.app.js
-    });
-  }
-});*/
 app.post('/register', middleware.api, (req, res) => {
-  admin.auth().getUserByEmail(req.body.email)
+  //create user
+  admin.auth().createUser({
+    email: req.body.email,
+    password: req.body.password
+  })
     .then((userRecord) => {
-      let user = userRecord;
-      admin.auth().createUser({
-        uid: user.uid,
-        email: user.email,
-        password: user.password
-      })
-        .then((userRecord) => {
-          res.apiResponse(userRecord);
-        })
-        .catch((err) => {
-          res.apiResponse(undefined, err);
-        });
+      //TODO: send user password reset email
+      res.apiResponse({userRecord});
     })
-    .catch((error) => {
-      //create user
-      admin.auth().createUser({
-        email: user.email,
-        password: user.password
-      })
-        .then((userRecord) => {
-          res.apiResponse(userRecord);
-        })
-        .catch((err) => {
-          res.apiResponse(undefined, err);
-        });
+    .catch((err) => {
+      res.apiResponse({err});
     });
 });
 app.get('/*', (req, res) => {

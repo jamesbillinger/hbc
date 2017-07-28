@@ -33,7 +33,8 @@ class About extends Component {
           </div>
           <div className='content' style={{animationDelay:'0.5s'}}>
             <p>
-              The Hays Baseball Club was created in 2013 as a home for
+              The Hays Baseball Club was created in 2013 with the goal of providing a competitive, high quality baseball
+              experience for area youth.
             </p>
             <p>
               Our mission is to provide an equal opportunity for young men from Hays and the surrounding areas

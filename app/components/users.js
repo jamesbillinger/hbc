@@ -65,6 +65,11 @@ class Users extends Component {
      */
   }
 
+  sort({sortBy, sortDirection}) {
+    const { hbc } = this.props;
+    //_.fromPairs(_.sortBy(_.toPairs(o), function(a){return a[1]}).reverse())
+  }
+
   render() {
     const { hbc, width, height } = this.props;
     return (
