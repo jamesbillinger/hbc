@@ -61,34 +61,43 @@ export function onAuthStateChanged(firebaseUser) {
         }).catch((err) => {
           console.log(err);
         });
-      firebaseRef.child('/users/' + firebaseUser.uid).on('value', (data) => {
-          let user = data.val();
-          if (!user) {
-            firebaseRef.child('/users/' + firebaseUser.uid).set({
+      firebaseRef.child('/users/' + firebaseUser.uid).once('value').then((data) => {
+        let user = data.val();
+        if (!user) {
+          firebaseRef.child('/users/' + firebaseUser.uid).set({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            emailVerified: firebaseUser.emailVerified
+          });
+        } else if (user.email !== firebaseUser.email || (!user.emailVerified && firebaseUser.emailVerified)) {
+          firebaseRef.child('/users/' + firebaseUser.uid).update({
+            email: firebaseUser.email,
+            emailVerified: firebaseUser.emailVerified
+          });
+        }
+        firebaseRef.child('/groups/').on('value', (snap) => {
+          let groups = {};
+          snap.forEach((child) => {
+            groups[child.key] = child.val();
+          });
+          dispatch({
+            type: 'UPDATE_AUTH',
+            user: user || {
               uid: firebaseUser.uid,
               email: firebaseUser.email,
               emailVerified: firebaseUser.emailVerified
-            });
-          } else if (user.email !== firebaseUser.email || (!user.emailVerified && firebaseUser.emailVerified)) {
-            firebaseRef.child('/users/' + firebaseUser.uid).update({
-              email: firebaseUser.email,
-              emailVerified: firebaseUser.emailVerified
-            });
-          } else {
+            },
+            groups
+          });
+        });
+        firebaseRef.child('/users/' + firebaseUser.uid).on('value', (data) => {
+          let user = data.val();
+          if (user) {
             dispatch({
               type: 'UPDATE_AUTH',
               user
             });
           }
-        });
-      firebaseRef.child('/groups/').on('value', (snap) => {
-        let groups = {};
-        snap.forEach((child) => {
-          groups[child.key] = child.val();
-        });
-        dispatch({
-          type: 'FETCH_GROUPS',
-          groups
         });
       });
       loadAgeGroups(dispatch);
@@ -293,41 +302,47 @@ export function deleteUser(uid) {
           });
         }
       });
-      firebaseRef.child('/players').once('value').then((snap) => {
-        snap.forEach((child) => {
-          let player = child.val();
-          if (player && player.user && player.users[uid]) {
-            let users = Object.assign({}, player.users);
-            delete users[uid];
-            child.update({
-              users
-            });
-          }
-        });
-      });
-      firebaseRef.child('/groups').once('value').then((snap) => {
-        snap.forEach((child) => {
-          let group = child.val();
-          if (group && group[uid]) {
-            delete group[uid];
-            child.set(group);
-          }
-        });
-      });
-      fetch('/user/' + uid, {
-        headers: {
-          'x-access-token': global.token
-        },
-        method: 'DELETE'
-      })
-        .then(response => response.json())
-        .then(err => {
-          console.log(err);
-        })
-        .catch(ex => {
-          console.log(ex);
-        });
     });
+    console.log('here1');
+    firebaseRef.child('/players').once('value').then((snap) => {
+      snap.forEach((child) => {
+        let player = child.val();
+        if (player && player.user && player.users[uid]) {
+          let users = Object.assign({}, player.users);
+          delete users[uid];
+          child.update({
+            users
+          });
+        }
+      });
+    });
+    console.log('here2');
+    firebaseRef.child('/groups').once('value').then((snap) => {
+      snap.forEach((child) => {
+        let group = child.val();
+        if (group && group[uid]) {
+          delete group[uid];
+          child.set(group);
+        }
+      });
+    });
+    console.log('here3');
+    fetch('/user/' + uid, {
+      headers: {
+        'x-access-token': global.token
+      },
+      method: 'DELETE'
+    })
+      .then(response => {
+        console.log(response);
+        response.json()
+      })
+      .then(err => {
+        console.log('deleted user', err);
+      })
+      .catch(ex => {
+        console.log(ex);
+      });
   }
 }
 

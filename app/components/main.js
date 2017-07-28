@@ -52,6 +52,7 @@ class Main extends Component {
 
   render() {
     const { user, groups, location, initialLoadComplete, actions, history } = this.props;
+    console.log(initialLoadComplete);
     return (
       <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <Route location={location} key={location.key}>

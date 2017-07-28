@@ -60,6 +60,7 @@ admin.initializeApp({
   databaseURL: "https://haysbaseballclub-33b63.firebaseio.com"
 });
 app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, res) => {
+  log('deleting user', req.params.uid);
   admin.auth().deleteUser(req.params.uid)
     .then((userRecord) => {
       res.apiResponse();

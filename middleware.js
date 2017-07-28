@@ -74,6 +74,7 @@ exports.requireUser = function(admin, group) {
         .then((decodedToken) => {
           let uid = decodedToken.uid;
           req.user = {uid: decodedToken.uid};
+          next();
         })
         .catch((err) => {
           console.log(err);

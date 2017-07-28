@@ -12,11 +12,8 @@ function hbc(state = initialState, action) {
         user: action.err ? undefined : action.user,
         authErr: action.err,
         authEmail: action.email,
-        initialLoadComplete: true
-      });
-    case 'FETCH_GROUPS':
-      return Object.assign({}, state, {
-        groups: action.groups || {}
+        groups: action.groups || state.groups,
+        initialLoadComplete: state.initialLoadComplete || (!action.user || !!action.groups)
       });
 
     case 'FETCH_USERS':
