@@ -63,13 +63,18 @@ export function onAuthStateChanged(firebaseUser) {
       firebaseRef.child('/users/' + firebaseUser.uid).once('value').then((data) => {
         let user = data.val();
         if (!user) {
-          firebaseRef.child('/users/' + firebaseUser.uid).set({
+          let newSet = {
             uid: firebaseUser.uid,
             email: firebaseUser.email,
-            emailVerified: firebaseUser.emailVerified,
-            provider: firebaseUser.providerData && firebaseUser.providerData[0],
-            name: firebaseUser.providerData && firebaseUser.providerData[0] && firebaseUser.providerData[0].displayName
-          });
+            emailVerified: firebaseUser.emailVerified
+          };
+          if (firebaseUser.providerData && firebaseUser.providerData[0]) {
+            newSet.provider = firebaseUser.providerData[0].providerId;
+            if (firebaseUser.providerData[0].displayName) {
+              newSet.name = firebaseUser.providerData[0].displayName;
+            }
+          }
+          firebaseRef.child('/users/' + firebaseUser.uid).set(newSet);
         } else if (user.email !== firebaseUser.email || (!user.emailVerified && firebaseUser.emailVerified)) {
           firebaseRef.child('/users/' + firebaseUser.uid).update({
             email: firebaseUser.email,
@@ -271,21 +276,21 @@ export function fetchUsers() {
 export function addUser(user, callback) {
   return dispatch => {
     fetch('/adduser', {
-      'x-access-token': global.token,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
+      headers: {
+        'x-access-token': global.token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
       method: 'POST',
       body: JSON.stringify(user)
     })
       .then(response => response.json())
       .then(json => {
+        console.log(json);
         if (json.userRecord) {
-          firebaseRef.child('/users/' + json.userRecord.uid).push({
-            uid,
-            ...user
-          });
           callback && callback(json.userRecord.uid);
         } else {
+          console.log(json);
           callback && callback(undefined, {error: 'No user returned'});
         }
       })

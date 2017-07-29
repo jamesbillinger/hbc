@@ -59,8 +59,9 @@ let manifest = require(__dirname + '/files/dist/assets.json');
 let admin = require('firebase-admin');
 
 let firebase = require('firebase');
-const config = require('./config')
+const config = require('./config');
 const firebaseApp = firebase.initializeApp(config.firebase);
+const firebaseRef = firebaseApp.database().ref();
 
 let serviceAccount = require('./haysbaseballclub.json');
 admin.initializeApp({
@@ -77,44 +78,52 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
       res.apiError(err);
     });
 });
-app.post('/adduser', middleware.api, (req, res) => {
+app.post('/adduser', middleware.api, middleware.requireUser(admin), (req, res) => {
   //create user
-  admin.auth().createUser({
-    email: req.body.email,
-    password: req.body.password || 'ALDSklksdflk09',
-    emailVerified: true
-  })
-    .then((userRecord) => {
-      firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password || 'ALDSklksdflk09')
-        .then((user) => {
-          firebaseRef.child('/users/' + userRecord.uid).set({
-            uid: userRecord.uid,
-            email: userRecord.email,
-            emailVerified: userRecord.emailVerified,
-            provider: userRecord.providerData && userRecord.providerData[0],
-            name: req.body.name,
-            phone: req.body.phone,
-            willingToCoach: req.body.willingToCoach
-          });
-          firebase.auth().sendPasswordResetEmail(req.body.email)
-            .then(() => {
-              firebase.auth().signOut();
-              res.apiResponse({userRecord});
-            })
-            .catch((err) => {
-              console.log(err);
-              firebase.auth().signOut();
-              res.apiResponse({userRecord});
-            })
-        })
-        .catch((err) => {
-          log(err);
-          res.apiResponse({userRecord});
-        })
+  log('creating user', req.body);
+  if (req.body.email) {
+    admin.auth().createUser({
+      email: req.body.email,
+      password: req.body.password || 'ALDSklksdflk09',
+      emailVerified: true
     })
-    .catch((err) => {
-      res.apiResponse({err});
-    });
+      .then((userRecord) => {
+        firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password || 'ALDSklksdflk09')
+          .then((user) => {
+            let newUser = {
+              uid: userRecord.uid,
+              email: userRecord.email,
+              emailVerified: !!userRecord.emailVerified,
+              name: req.body.name || '',
+              phone: req.body.phone || '',
+              willingToCoach: !!req.body.willingToCoach
+            }
+            if (userRecord.providerData && userRecord.providerData[0]) {
+              newUser.provider = userRecord.providerData[0].providerId;
+            }
+            firebaseRef.child('/users/' + userRecord.uid).set(newUser);
+            firebase.auth().sendPasswordResetEmail(req.body.email)
+              .then(() => {
+                firebase.auth().signOut();
+                res.apiResponse({userRecord});
+              })
+              .catch((err) => {
+                console.log(err);
+                firebase.auth().signOut();
+                res.apiResponse({userRecord});
+              })
+          })
+          .catch((err) => {
+            log(err);
+            res.apiResponse({userRecord});
+          })
+      })
+      .catch((err) => {
+        res.apiResponse({err});
+      });
+  } else {
+
+  }
 });
 app.get('/*', (req, res) => {
   res.render('index', {
