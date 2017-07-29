@@ -58,18 +58,16 @@ let middleware = require('./middleware');
 let manifest = require(__dirname + '/files/dist/assets.json');
 
 let admin = require('firebase-admin');
-var db = admin.database();
-
 let firebase = require('firebase');
 const config = require('./config');
 const firebaseApp = firebase.initializeApp(config.firebase);
 const firebaseRef = firebaseApp.database().ref();
-
 let serviceAccount = require('./haysbaseballclub.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://haysbaseballclub-33b63.firebaseio.com"
 });
+let db = admin.database();
 
 
 app.delete('/api/user/:uid', middleware.api, middleware.requireUser(admin), (req, res) => {
@@ -131,35 +129,40 @@ app.post('/api/adduser', middleware.api, middleware.requireUser(admin), (req, re
   }
 });
 
-app.get('/api/contact', middleware.api, (req, res) => {
+app.get('/api/contacts', middleware.api, (req, res) => {
   let coaches = {};
   db.ref('teams').once('value')
     .then((snap) => {
-      let team = snap.val();
-      Object.keys(team.coaches || {}).map((k) => {
-        if (coaches[k]) {
-          coaches[k].teams.push({
-            uid: team.uid,
-            ageGroup: team.ageGroup,
-            name: team.name
-          });
-        } else {
-          coaches[k] = [{
-            teams: [{
+      snap.forEach((child) => {
+        let team = child.val();
+        Object.keys(team.coaches || {}).map((k) => {
+          if (coaches[k]) {
+            coaches[k].teams.push({
               uid: team.uid,
               ageGroup: team.ageGroup,
               name: team.name
-            }]
-          }];
-        }
+            });
+          } else {
+            coaches[k] = {
+              teams: [{
+                uid: team.uid,
+                ageGroup: team.ageGroup,
+                name: team.name
+              }]
+            };
+          }
+        });
       });
       async.eachLimit(Object.keys(coaches), 5, (k, callback) => {
+        log(k);
         db.ref('users/' + k).once('value')
           .then((snap2) => {
-            let user = snap2.val(0);
-            coaches[k].name = user.name;
-            coaches[k].email = user.email;
-            coaches[k].phone = user.phone;
+            let user = snap2.val();
+            if (user) {
+              coaches[k].name = user.name;
+              coaches[k].email = user.email;
+              coaches[k].phone = user.phone;
+            }
             callback();
           })
           .catch((err) => {

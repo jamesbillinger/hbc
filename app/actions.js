@@ -519,6 +519,28 @@ export function deleteFAQ(uid) {
   }
 }
 
+export function fetchContacts() {
+  return dispatch => {
+    fetch('/api/contacts', {
+      headers: { 'x-access-token': global.token }
+    })
+      .then(response => response.json())
+      .then(json => {
+        dispatch({
+          type: 'FETCH_CONTACTS',
+          contacts: json
+        })
+      })
+      .catch(ex => {
+        console.log(ex);
+        dispatch({
+          type: 'FETCH_CONTACTS',
+          err: ex
+        })
+      });
+  }
+}
+
 function loadAgeGroups(dispatch) {
   let t = moment();
   let min;
