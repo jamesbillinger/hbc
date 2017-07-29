@@ -84,6 +84,15 @@ app.post('/adduser', middleware.api, (req, res) => {
     .then((userRecord) => {
       firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password || 'ALDSklksdflk09')
         .then((user) => {
+          firebaseRef.child('/users/' + userRecord.uid).set({
+            uid: userRecord.uid,
+            email: userRecord.email,
+            emailVerified: userRecord.emailVerified,
+            provider: userRecord.providerData && userRecord.providerData[0],
+            name: req.body.name,
+            phone: req.body.phone,
+            willingToCoach: req.body.willingToCoach
+          });
           firebase.auth().sendPasswordResetEmail(req.body.email)
             .then(() => {
               firebase.auth().signOut();
