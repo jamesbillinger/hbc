@@ -59,7 +59,7 @@ class Main extends Component {
         </nav>
         <div style={{flex:'0 0 20%', textAlign:'center'}}>
           <Link to='/'>
-            <img src='/images/hbc.png' width='40px' />
+            <img src='/images/hbc_40w.png' />
           </Link>
         </div>
         {initialLoadComplete
