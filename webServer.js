@@ -7,6 +7,7 @@ let winston = require('winston');
 let expressWinston = require('express-winston');
 let tracer = require('tracer');
 let bodyParser = require('body-parser');
+let async = require('async');
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -57,6 +58,7 @@ let middleware = require('./middleware');
 let manifest = require(__dirname + '/files/dist/assets.json');
 
 let admin = require('firebase-admin');
+var db = admin.database();
 
 let firebase = require('firebase');
 const config = require('./config');
@@ -68,7 +70,9 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://haysbaseballclub-33b63.firebaseio.com"
 });
-app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, res) => {
+
+
+app.delete('/api/user/:uid', middleware.api, middleware.requireUser(admin), (req, res) => {
   log('deleting user', req.params.uid);
   admin.auth().deleteUser(req.params.uid)
     .then((userRecord) => {
@@ -78,7 +82,8 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
       res.apiError(err);
     });
 });
-app.post('/adduser', middleware.api, middleware.requireUser(admin), (req, res) => {
+
+app.post('/api/adduser', middleware.api, middleware.requireUser(admin), (req, res) => {
   //create user
   log('creating user', req.body);
   if (req.body.email) {
@@ -122,9 +127,55 @@ app.post('/adduser', middleware.api, middleware.requireUser(admin), (req, res) =
         res.apiResponse({err});
       });
   } else {
-
+    res.apiResponse({err: 'no email provided'});
   }
 });
+
+app.get('/api/contact', middleware.api, (req, res) => {
+  let coaches = {};
+  db.ref('teams').once('value')
+    .then((snap) => {
+      let team = snap.val();
+      Object.keys(team.coaches || {}).map((k) => {
+        if (coaches[k]) {
+          coaches[k].teams.push({
+            uid: team.uid,
+            ageGroup: team.ageGroup,
+            name: team.name
+          });
+        } else {
+          coaches[k] = [{
+            teams: [{
+              uid: team.uid,
+              ageGroup: team.ageGroup,
+              name: team.name
+            }]
+          }];
+        }
+      });
+      async.eachLimit(Object.keys(coaches), 5, (k, callback) => {
+        db.ref('users/' + k).once('value')
+          .then((snap2) => {
+            let user = snap2.val(0);
+            coaches[k].name = user.name;
+            coaches[k].email = user.email;
+            coaches[k].phone = user.phone;
+            callback();
+          })
+          .catch((err) => {
+            log(err);
+            callback();
+          });
+      }, (done) => {
+        res.apiResponse(coaches);
+      });
+    })
+    .catch((err) => {
+      log(err);
+      res.apiResponse({});
+    });
+});
+
 app.get('/*', (req, res) => {
   res.render('index', {
     NODE_ENV: process.env.NODE_ENV || 'production',

@@ -99,7 +99,7 @@ class Login extends Component {
                  style={{padding:'16px 32px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer', zIndex:'2'}}>
               Login
             </div>
-            <button style={{height:'0px', width:'0px', position:'absolute', outline:'none', border:'none', right:'10px'}}
+            <button style={{height:'0px', width:'0px', position:'absolute', outline:'none', border:'none', right:'10px', background:'none'}}
                     type='submit' disabled={pristine || submitting || !valid} />
           </div>
           <div style={{display:'flex', justifyContent:'space-between', margin:'30px 10px 0px 10px', alignItems:'center'}}>

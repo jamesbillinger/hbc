@@ -275,7 +275,7 @@ export function fetchUsers() {
 
 export function addUser(user, callback) {
   return dispatch => {
-    fetch('/adduser', {
+    fetch('/api/adduser', {
       headers: {
         'x-access-token': global.token,
         'Accept': 'application/json',
@@ -357,7 +357,7 @@ export function deleteUser(uid) {
         }
       });
     });
-    fetch('/user/' + uid, {
+    fetch('/api/user/' + uid, {
       headers: {
         'x-access-token': global.token,
         'Accept': 'application/json',
