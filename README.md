@@ -2,9 +2,8 @@
 
 TODO:
  - logo
- - finish Contact Us page - pictures, phone numbers?  Pull from coaches table?
  - make tables sortable
-
+ - don't cache api calls
 
 To Push:
  - git pull
