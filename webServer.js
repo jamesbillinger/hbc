@@ -6,8 +6,11 @@ let express = require('express');
 let winston = require('winston');
 let expressWinston = require('express-winston');
 let tracer = require('tracer');
+let bodyParser = require('body-parser');
 
 let app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(express.static('files'));
 

@@ -67,8 +67,12 @@ class UserForm extends Component {
         });
       } else {
         actions.addUser(data, (uid) => {
-          resolve();
-          history.push('/admin/user/' + uid);
+          if (uid) {
+            resolve();
+            history.push('/admin/user/' + uid);
+          } else {
+            revoke();
+          }
         });
       }
     })
