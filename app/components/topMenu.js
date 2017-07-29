@@ -49,16 +49,21 @@ class Main extends Component {
     }
     return (
       <header className='header'
-           style={{flex:'0 0 60px', display:'flex', alignItems:'center', justifyContent:'space-between',
+           style={{flex:'0 0 60px', display:'flex', alignItems:'center',
                    padding:'0px 50px', fontSize:'18px', marginTop:'35px'}}>
         {/* header */}
-        <nav style={{display:'flex', alignItems:'center'}}>
+        <nav style={{display:'flex', alignItems:'center', flex:'0 0 40%'}}>
           <MenuButton to='/' location={location}>Home</MenuButton>
           <MenuButton to='/about' location={location}>About</MenuButton>
           <MenuButton to='/contact' location={location}>Contact</MenuButton>
         </nav>
-        {initialLoadComplete &&
-          <nav style={{display:'flex', alignItems:'center'}} className='fadein'>
+        <div style={{flex:'0 0 20%', textAlign:'center'}}>
+          <Link to='/'>
+            <img src='/images/hbc.png' width='40px' />
+          </Link>
+        </div>
+        {initialLoadComplete
+          ? <nav style={{flex:'0 0 40%', display:'flex', alignItems:'center', justifyContent:'flex-end'}} className='fadein'>
             {!user && <MenuButton to='/login' location={location} >Log In</MenuButton>}
             {user && groups && groups.admin[user.uid] &&
               <MenuButton to='/admin/users' location={location}>Admin</MenuButton>
@@ -81,6 +86,7 @@ class Main extends Component {
               </IconMenu>
             }
           </nav>
+          : <div style={{flex:'0 0 40%'}} />
         }
       </header>
     );
