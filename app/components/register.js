@@ -5,13 +5,14 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 import FormInput from 'components/formInput';
 import MaskedInput from 'components/maskedInput';
 import Button from 'components/button';
 //import { auth } from 'src/auth';
 import { required, email, phoneNumber, fullName, minLength } from '../validators';
 import Logo from 'components/logo';
+const minLength8 = minLength(8);
 
 class GoogleButton extends Component {
   click() {
@@ -55,7 +56,8 @@ class Register extends Component {
     return new Promise((resolve, revoke) => {
       actions.register(data, (r, err) => {
         if (err) {
-          revoke(err);
+          throw new SubmissionError({password:err.message});
+          revoke();
         } else {
           resolve(r);
         }
@@ -86,7 +88,7 @@ class Register extends Component {
                   <Field component={FormInput} name='email' label='Email Address'
                          validate={[required, email]} />
                   <Field component={FormInput} name='password' label='Password' type='password'
-                         validate={[required, minLength(8)]} />
+                         validate={[required, minLength8]} />
                 </div>
                 <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
                   <Button onClick={handleSubmit(this._submit)} disabled={pristine || submitting || !valid} primary={true} type='submit'>

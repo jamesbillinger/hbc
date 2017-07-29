@@ -18,6 +18,8 @@ import Admin from 'components/admin';
 import Profile from 'components/profile';
 import ForgotPassword from 'components/forgotPassword';
 import ResetPassword from 'components/resetPassword';
+import PasswordUpdated from 'components/passwordUpdated';
+import PasswordReset from 'components/passwordReset';
 import qs from 'query-string';
 
 class Main extends Component {
@@ -32,26 +34,38 @@ class Main extends Component {
       actions.fetchFAQs();
     }
     let query = qs.parse(location.search);
-    if (user && query && query.oobCode) {
-      this._handledQuery = true;
-      actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
-        history.push('/profile');
-      });
+    if (query && query.oobCode) {
+      this.handleOOBCode();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { location, user, actions, history } = this.props;
     let query = qs.parse(location.search);
-    if (!this._handledQuery && user && query && query.oobCode) {
-      this._handledQuery = true;
-      actions.applyActionCode(user.uid, query.mode, query.oobCode, () => {
-        if (query.mode === 'resetPassword') {
+    if (query && query.oobCode) {
+      this.handleOOBCode();
+    }
+  }
+
+  handleOOBCode() {
+    const { location, user, actions, history } = this.props;
+    let query = qs.parse(location.search);
+    if (query && query.oobCode) {
+      if (query.mode === 'resetPassword' && !this._handledQuery ) {
+        //this is handled in resetPassword form
+        history.push('/resetpassword/' + location.search);
+        this._handledQuery = true;
+        /*actions.applyActionCode(undefined, query.mode, query.oobCode, undefined, () => {
           history.push('/resetpassword');
-        } else {
-          history.push('/profile');
+        });*/
+      } else if (query.mode === 'verifyEmail') {
+        if (!this._handledQuery && user) {
+          this._handledQuery = true;
+          actions.applyActionCode(user.uid, query.mode, query.oobCode, undefined, () => {
+            history.push('/profile');
+          });
         }
-      });
+      }
     }
   }
 
@@ -90,13 +104,20 @@ class Main extends Component {
               <Route path='/resetpassword' render={(props) => {
                 if (!initialLoadComplete) {
                   return <div />;
+                } else if (user && user.providerData && user.providerData[0] &&
+                  user.providerData[0].providerId === 'google.com') {
+                  window.open('https://support.google.com/accounts/answer/41078?hl=en');
                 } else if (user) {
                   return <ResetPassword {...props} initialValues={user}/>;
+                } else if (location.search) {
+                  return <ResetPassword {...props} initialValues={{}} />;
                 } else {
                   return <Redirect to='/login' />;
                 }
               }} />
             }} />
+            <Route path='/passwordupdated' render={(props) => <PasswordUpdated {...props} />} />
+            <Route path='/passwordreset' render={(props) => <PasswordReset {...props} />} />
             <Route path='/register' render={(props) => {
               if (!initialLoadComplete) {
                 return <div/>;

@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 import FormInput from 'components/formInput';
 import Button from 'components/button';
 import { required, email } from '../validators';
@@ -28,13 +28,15 @@ class PasswordReset extends Component {
   }
 
   submit(data) {
-    const { actions } = this.props;
+    const { actions, history } = this.props;
     return new Promise((resolve, revoke) => {
       actions.resetPassword(data.email, (r, err) => {
         if (err) {
-          revoke(err);
+          throw new SubmissionError({email:err.message});
+          revoke();
         } else {
           resolve(r);
+          history.push('/passwordreset');
         }
       });
     })
@@ -59,8 +61,10 @@ class PasswordReset extends Component {
           <div style={{display:'flex', justifyContent:'center', margin:'30px 10px 0px 10px'}}>
             <div onClick={handleSubmit(this._submit)} className='dashboardButton'
                  style={{padding:'16px 25px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
-              Send me my password
+              Reset My Password
             </div>
+            <button style={{height:'0px', width:'0px', position:'absolute', outline:'none', border:'none', background:'none'}}
+                    type='submit' disabled={pristine || submitting || !valid} />
           </div>
         </form>
       </div>

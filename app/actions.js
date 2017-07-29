@@ -4,8 +4,7 @@ import pick from 'lodash/pick';
 import moment from 'moment';
 
 const firebaseApp = firebase.initializeApp(config.firebase);
-const database = firebaseApp.database();
-const firebaseRef = database.ref();
+const firebaseRef = firebaseApp.database().ref();
 const firebaseAuth = firebase.auth;
 let provider = new firebase.auth.GoogleAuthProvider();
 
@@ -67,12 +66,19 @@ export function onAuthStateChanged(firebaseUser) {
           firebaseRef.child('/users/' + firebaseUser.uid).set({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
-            emailVerified: firebaseUser.emailVerified
+            emailVerified: firebaseUser.emailVerified,
+            provider: firebaseUser.providerData && firebaseUser.providerData[0],
+            name: firebaseUser.providerData && firebaseUser.providerData[0] && firebaseUser.providerData[0].displayName
           });
         } else if (user.email !== firebaseUser.email || (!user.emailVerified && firebaseUser.emailVerified)) {
           firebaseRef.child('/users/' + firebaseUser.uid).update({
             email: firebaseUser.email,
             emailVerified: firebaseUser.emailVerified
+          });
+        } else if ((user.provider && user.provider.providerID) !==
+          (firebaseUser.providerData && firebaseUser.providerData[0] && firebaseUser.providerData[0].providerId)) {
+          firebaseRef.child('/users/' + firebaseUser.uid).update({
+            provider: firebaseUser.providerData && firebaseUser.providerData[0] && firebaseUser.providerData[0].providerId
           });
         }
         firebaseRef.child('/groups/').on('value', (snap) => {
@@ -160,44 +166,53 @@ export function loginWithGoogle(email, callback) {
   }
 }
 
-export function applyActionCode(uid, mode, oobCode, callback) {
+export function applyActionCode(uid, mode, oobCode, newPassword, callback) {
   return dispatch => {
-    if (mode === 'verifyEmail') {
-      if (firebaseAuth().currentUser.emailVerified) {
-        firebaseRef.child('/users/' + uid).update({
-          emailVerified: true
-        });
-        callback && callback();
-      } else {
-        firebaseAuth().applyActionCode(oobCode)
-          .then(() => {
-            if (mode === 'verifyEmail') {
-              firebaseRef.child('/users/' + uid).update({
-                emailVerified: true
-              });
-            }
-            callback && callback();
-          })
-          .catch((err) => {
-            console.log(err);
-            callback && callback(err);
-          })
-      }
-    } else {
-      firebaseAuth().applyActionCode(oobCode)
-        .then(() => {
-          if (mode === 'verifyEmail') {
+    firebaseAuth().checkActionCode(oobCode)
+      .then((code) => {
+        if (mode === 'verifyEmail') {
+          if (firebaseAuth().currentUser.emailVerified) {
             firebaseRef.child('/users/' + uid).update({
               emailVerified: true
             });
+            callback && callback();
+          } else {
+            firebaseAuth().applyActionCode(oobCode)
+              .then(() => {
+                firebaseRef.child('/users/' + uid).update({
+                  emailVerified: true
+                });
+                callback && callback();
+              })
+              .catch((err) => {
+                console.log(err);
+                callback && callback(err);
+              })
           }
-          callback && callback();
-        })
-        .catch((err) => {
-          console.log(err);
-          callback && callback(err);
-        })
-    }
+        } else if (mode === 'resetPassword') {
+          firebaseAuth().confirmPasswordReset(oobCode, newPassword)
+            .then(() => {
+              callback && callback();
+            })
+            .catch((err) => {
+              console.log(err);
+              callback && callback(err);
+            })
+        } else {
+          firebaseAuth().applyActionCode(oobCode)
+            .then(() => {
+              callback && callback();
+            })
+            .catch((err) => {
+              console.log(err);
+              callback && callback(err);
+            })
+        }
+      })
+      .catch((cerr) => {
+        console.log('cerr:', cerr);
+        callback && callback(cerr);
+      })
   }
 }
 
@@ -285,6 +300,19 @@ export function updateUser(user, callback) {
   return dispatch => {
     firebaseRef.child('/users/' + user.uid).update(user);
     callback && callback();
+  }
+}
+
+export function updateUserPassword(password, callback) {
+  return dispatch => {
+    let user = firebaseAuth().currentUser;
+    user.updatePassword(password)
+      .then(() => {
+        callback && callback();
+      })
+      .catch((err) => {
+        callback && callback(err);
+      })
   }
 }
 

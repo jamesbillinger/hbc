@@ -1,6 +1,8 @@
 import moment from 'moment';
 
-export const required = value => (value ? undefined : 'Required');
+export const required = (value, values, field) => {
+  return (value ? undefined : 'Required');
+}
 
 export const email = value =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
@@ -12,8 +14,9 @@ export const maxLength = max => value =>
 
 export const maxLength15 = maxLength(15);
 
-export const minLength = min => value =>
-  value && value.length < min ? `Must be ${min} characters or more` : undefined;
+export const minLength = min => (value, values, field) => {
+  return value && value.length < min ? `Must be ${min} characters or more` : undefined;
+}
 
 export const minLength2 = minLength(2);
 

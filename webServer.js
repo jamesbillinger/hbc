@@ -54,6 +54,11 @@ let middleware = require('./middleware');
 let manifest = require(__dirname + '/files/dist/assets.json');
 
 let admin = require('firebase-admin');
+
+let firebase = require('firebase');
+const config = require('./config')
+const firebaseApp = firebase.initializeApp(config.firebase);
+
 let serviceAccount = require('./haysbaseballclub.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -69,15 +74,31 @@ app.delete('/user/:uid', middleware.api, middleware.requireUser(admin), (req, re
       res.apiError(err);
     });
 });
-app.post('/register', middleware.api, (req, res) => {
+app.post('/adduser', middleware.api, (req, res) => {
   //create user
   admin.auth().createUser({
     email: req.body.email,
-    password: req.body.password
+    password: req.body.password || 'ALDSklksdflk09',
+    emailVerified: true
   })
     .then((userRecord) => {
-      //TODO: send user password reset email
-      res.apiResponse({userRecord});
+      firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password || 'ALDSklksdflk09')
+        .then((user) => {
+          firebase.auth().sendPasswordResetEmail(req.body.email)
+            .then(() => {
+              firebase.auth().signOut();
+              res.apiResponse({userRecord});
+            })
+            .catch((err) => {
+              console.log(err);
+              firebase.auth().signOut();
+              res.apiResponse({userRecord});
+            })
+        })
+        .catch((err) => {
+          log(err);
+          res.apiResponse({userRecord});
+        })
     })
     .catch((err) => {
       res.apiResponse({err});

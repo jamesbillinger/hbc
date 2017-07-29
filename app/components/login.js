@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 import FormInput from 'components/formInput';
 import Button from 'components/button';
 import { required, email } from '../validators';
@@ -52,6 +52,7 @@ class Login extends Component {
     return new Promise((resolve, revoke) => {
       actions.login(data.email, data.password, (user, err) => {
         if (err) {
+          throw new SubmissionError({password:err.message});
           revoke(err);
         } else {
           let query = qs.parse(location.search);
@@ -91,16 +92,15 @@ class Login extends Component {
             }
           </div>
           <div style={{display:'flex', justifyContent:'space-between', margin:'22px 10px 0px 10px', alignItems:'center'}}>
-            <Link to='/forgotpassword' style={{color:'#ccc'}}>
+            <Link to='/forgotpassword' className='linkButton'>
               Forgot your password?
             </Link>
             <div onClick={handleSubmit(this._submit)} className='dashboardButton'
-                 style={{padding:'16px 32px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
+                 style={{padding:'16px 32px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer', zIndex:'2'}}>
               Login
             </div>
-            <button style={{height:'0px', width:'0px', position:'absolute', outline:'none', border:'none'}}
-                    type='submit' disabled={pristine || submitting || !valid}
-                    onClick={handleSubmit(this._submit)} />
+            <button style={{height:'0px', width:'0px', position:'absolute', outline:'none', border:'none', right:'10px'}}
+                    type='submit' disabled={pristine || submitting || !valid} />
           </div>
           <div style={{display:'flex', justifyContent:'space-between', margin:'30px 10px 0px 10px', alignItems:'center'}}>
             <Field component={GoogleButton} name='email' actions={actions} />

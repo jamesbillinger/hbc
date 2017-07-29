@@ -6,13 +6,6 @@ TODO:
  - make tables sortable
 
  - add new user should send them reset email password
- - add reset password link to My Profile
-   - reset password not working...think it uses action code
-   - mode=resetPassword
-   - oobCode
-   - so I need a resetPassword screen
-     - and a your password has been reset screen
- -login screen something over Forgot
 
 
 To Push:

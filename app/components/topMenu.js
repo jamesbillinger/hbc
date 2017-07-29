@@ -36,6 +36,17 @@ class Main extends Component {
 
   render() {
     const { user, groups, location, actions, initialLoadComplete } = this.props;
+    let passwordText;
+    if (user && user.provider === 'google.com') {
+      passwordText =
+        <a style={{width:'100%', height:'100%', color:'#212121'}}
+           href='https://support.google.com/accounts/answer/41078?hl=en' target='_blank'>
+          Change my password
+        </a>;
+    } else if (user) {
+      passwordText =
+        <Link to='/resetpassword' style={{color:'#212121', width:'100%', height:'100%'}}>Change my password</Link>;
+    }
     return (
       <header className='header'
            style={{flex:'0 0 60px', display:'flex', alignItems:'center', justifyContent:'space-between',
@@ -63,7 +74,8 @@ class Main extends Component {
                         style={{height:'24px'}}
                         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                <MenuItem primaryText={<Link to='/profile' style={{color:'black'}}>Manage my profile</Link>} />
+                <MenuItem primaryText={<Link to='/profile' style={{color:'#212121', width:'100%', height:'100%'}}>Manage my profile</Link>} />
+                <MenuItem primaryText={passwordText} />
                 <Divider />
                 <MenuItem primaryText='Sign out' onTouchTap={::actions.logout} />
               </IconMenu>
