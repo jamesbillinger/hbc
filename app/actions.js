@@ -301,6 +301,28 @@ export function addUser(user, callback) {
   }
 }
 
+export function updateFirebaseUser(uid, update, callback) {
+  return dispatch => {
+    fetch('/api/user/' + uid, {
+      headers: {
+        'x-access-token': global.token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify(update)
+    })
+      .then(response => response.json())
+      .then(json => {
+        callback && callback(json);
+      })
+      .catch(ex => {
+        console.log(ex);
+        callback && callback(undefined, ex);
+      });
+  }
+}
+
 export function updateUser(user, callback) {
   return dispatch => {
     firebaseRef.child('/users/' + user.uid).update(user);

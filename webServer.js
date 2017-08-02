@@ -179,6 +179,17 @@ app.get('/api/contacts', middleware.api, (req, res) => {
     });
 });
 
+app.patch('/api/user/:uid', middleware.api, middleware.requireUser(admin), (req, res) => {
+  admin.auth().updateUser(req.params.uid, req.body)
+    .then((userRecord) => {
+      res.apiResponse(userRecord);
+    })
+    .catch((err) => {
+      log(err);
+      res.apiError(error);
+    });
+});
+
 app.get('/*', (req, res) => {
   res.render('index', {
     NODE_ENV: process.env.NODE_ENV || 'production',

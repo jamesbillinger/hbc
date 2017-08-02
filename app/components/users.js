@@ -55,6 +55,27 @@ class Users extends Component {
     );
   }
 
+  verifiedRenderer({cellData, rowData}) {
+    const { actions, hbc } = this.props;
+    return (
+      <Toggle id='clickable' toggled={!!cellData}
+              onToggle={(e, isInputChecked) => {
+                actions.updateFirebaseUser(rowData.uid, {
+                  emailVerified: isInputChecked
+                }, (userRecord, err) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    actions.updateUser({
+                      uid: rowData.uid,
+                      emailVerified: userRecord.emailVerified
+                    });
+                  }
+                });
+              }} />
+    );
+  }
+
   toggleRenderer({cellData, rowData}) {
     return (
       <Toggle toggled={!!cellData} />
@@ -85,7 +106,7 @@ class Users extends Component {
         <Column label='Name' dataKey='name' width={100} flexGrow={1}/>
         <Column width={200} label='Email' dataKey='email' flexGrow={1} />
         <Column width={100} label='Phone' dataKey='phone' flexGrow={1} />
-        <Column width={80} label='Verified' dataKey='emailVerified' flexGrow={0} cellRenderer={::this.toggleRenderer} />
+        <Column width={80} label='Verified' dataKey='emailVerified' flexGrow={0} cellRenderer={::this.verifiedRenderer} />
         <Column width={80} label='Admin' dataKey='uid' flexGrow={0} cellRenderer={::this.adminRenderer}/>
         <Column width={80} label='+ Coach' dataKey='willingToCoach' flexGrow={0} cellRenderer={::this.toggleRenderer} />
       </Table>
