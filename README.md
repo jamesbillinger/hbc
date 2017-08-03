@@ -7,9 +7,10 @@ TODO:
  - allow to send emails
  - date / time picker is awful
  - event editing page is weird
+ - top menu on smaller devices might not work well
 
-To Push:
+To Push (as pm2 user):
  - git pull
  - npm run build
- - pm2 reload hbc-web
- - rm -r /opt/nginx/cache/*
+ - pm2 reload hbc
+ - sudo rm -r /opt/nginx/cache/*
