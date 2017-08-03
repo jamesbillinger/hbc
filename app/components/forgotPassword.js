@@ -10,6 +10,7 @@ import FormInput from 'components/formInput';
 import Button from 'components/button';
 import { required, email } from '../validators';
 import Logo from 'components/logo';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class PasswordReset extends Component {
   constructor() {
@@ -45,8 +46,7 @@ class PasswordReset extends Component {
   render () {
     const { handleSubmit, pristine, submitting, valid, hbc, actions } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center', alignItems:'center'}}>
+      <AbsoluteWrapper>
         <form onSubmit={handleSubmit(this._submit)}>
           <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
             <div style={{height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column',
@@ -67,7 +67,7 @@ class PasswordReset extends Component {
                     type='submit' disabled={pristine || submitting || !valid} />
           </div>
         </form>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

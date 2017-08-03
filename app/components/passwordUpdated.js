@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import { Link } from 'react-router-dom';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class PasswordUpdated extends Component {
   componentDidMount() {
@@ -22,8 +23,7 @@ class PasswordUpdated extends Component {
   render () {
     const { hbc } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+      <AbsoluteWrapper>
         <div style={{fontSize:'16px', color:'#bbb'}} className='content'>Your password has been updated</div>
         <div style={{marginTop:'30px'}}>
           {hbc.user
@@ -37,7 +37,7 @@ class PasswordUpdated extends Component {
             </Link>
           }
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

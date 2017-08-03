@@ -13,6 +13,7 @@ import Button from 'components/button';
 import { required, email, phoneNumber, fullName, minLength } from '../validators';
 import Logo from 'components/logo';
 const minLength8 = minLength(8);
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class GoogleButton extends Component {
   click() {
@@ -23,7 +24,7 @@ class GoogleButton extends Component {
   render() {
     return (
       <div className='registerButton' onClick={::this.click}
-           style={{padding:'16px 30px', borderRadius:'30px', color:'#000', width:'100%', alignItems:'center',
+           style={{padding:'16px 30px', borderRadius:'30px', color:'#000', alignItems:'center',
              fontSize:'16px', cursor:'pointer', display:'flex', justifyContent:'center'}}>
         <img src='images/google.svg' height='20px' width='20px' />
         <div style={{paddingLeft:'10px'}}>Sign in with Google</div>
@@ -68,20 +69,24 @@ class Register extends Component {
   render () {
     const { handleSubmit, pristine, submitting, valid, actions } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center', paddingTop:'4vh'}}>
-        <div>
-          <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
-            <div style={{height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column', marginBottom:'10px'}}>
-              <Logo text='Register' />
-            </div>
+      <AbsoluteWrapper>
+        <div style={{width:'600px', maxWidth:'100%', flex:'1 0 auto'}}>
+          <div style={{paddingBottom:'20px', height:'60px', display:'flex', flexDirection:'column', width:'100%'}}>
+            <Logo text='Register' />
           </div>
-          <div style={{display:'flex'}}>
-            <div style={{borderRight:'1px solid #ddd', marginRight:'20px', paddingRight:'15px'}} className='content'>
-              <h3 style={{textAlign:'center'}}>Register new account</h3>
+          <div style={{display:'flex', flexWrap:'wrap'}}>
+            <div style={{borderRight:'1px solid #ddd', marginRight:'20px', paddingRight:'25px', flex:'1 1 auto'}}
+                 className='content'>
+              <h3 style={{textAlign:'center'}}>Sign in with social</h3>
+              <div style={{marginTop:'40px', textAlign:'center'}}>
+                <Field component={GoogleButton} name='email' actions={actions} />
+              </div>
+            </div>
+            <div style={{flex:'1 0 auto'}} className='content'>
+              <h3 style={{textAlign:'center'}}>...or register with email</h3>
               <form onSubmit={handleSubmit(this._submit)}>
                 <div>
-                  <Field component={FormInput} name='name' label='Name' autoFocus={true}
+                  <Field component={FormInput} name='name' label='Name'
                          validate={[required, fullName]} />
                   <Field component={MaskedInput} name='phone' label='Phone' mask='(111) 111-1111'
                          validate={[phoneNumber]} />
@@ -97,15 +102,9 @@ class Register extends Component {
                 </div>
               </form>
             </div>
-            <div style={{flex:'1 1 auto', minWidth:'250px'}} className='content'>
-              <h3 style={{textAlign:'center'}}>Or...</h3>
-              <div style={{marginTop:'40px', textAlign:'center'}}>
-                <Field component={GoogleButton} name='email' actions={actions} />
-              </div>
-            </div>
           </div>
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

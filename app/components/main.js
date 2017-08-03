@@ -13,6 +13,7 @@ import Dashboard from 'components/dashboard';
 import About from 'components/about';
 import Contact from 'components/contact';
 import Schedule from 'components/schedule';
+import ScheduleItem from 'components/scheduleItem';
 import firebase from 'firebase';
 import Admin from 'components/admin';
 import Profile from 'components/profile';
@@ -29,9 +30,12 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { actions, faqs, location, history, user } = this.props;
+    const { actions, faqs, events, location, history, user } = this.props;
     if (!faqs) {
       actions.fetchFAQs();
+    }
+    if (!events) {
+      actions.fetchEvents();
     }
     let query = qs.parse(location.search);
     if (query && query.oobCode) {
@@ -78,13 +82,8 @@ class Main extends Component {
             <Route exact={true} path='/' render={(props) => <Dashboard {...props} />} />
             <Route path='/about' render={(props) => <About {...props} />} />
             <Route path='/contact' render={(props) => <Contact {...props} />} />
-            <Route path='/schedule' render={(props) => {
-              if (!user) {
-                return <Redirect to='/login' />;
-              } else {
-                return <Schedule {...props} />;
-              }
-            }} />
+            <Route path='/schedule/:uid' render={(props) => <ScheduleItem {...props} />} />
+            <Route path='/schedule' render={(props) => <Schedule {...props} />} />
             <Route path='/login' render={(props) => {
               if (!initialLoadComplete) {
                 return <div />;
@@ -158,6 +157,7 @@ function mapStateToProps(state) {
     user: state.hbc.user,
     groups: state.hbc.groups,
     faqs: state.hbc.faqs,
+    events: state.hbc.events,
     initialLoadComplete: state.hbc.initialLoadComplete
   };
 }

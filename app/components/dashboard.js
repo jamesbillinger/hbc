@@ -8,16 +8,18 @@ import * as Actions from 'app/actions';
 import { Route, BrowserRouter, Link, Redirect, Switch } from 'react-router-dom';
 import MenuButton from 'components/menuButton';
 import Logo from './logo';
+import moment from 'moment';
+import UpcomingEvents from 'components/upcomingEvents';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class Dashboard extends Component {
   render() {
     const { history, location, user, initialLoadComplete } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center'}}>
-        <div style={{width:'1000px', maxWidth:'100%', margin:'4vw',
+      <AbsoluteWrapper>
+        <div style={{width:'1000px', maxWidth:'100%', margin:'4vh 4vw 0vw 4vw', flex:'1 0 auto',
                      display:'flex', flexDirection:'column', justifyContent:'space-around'}}>
-          <div style={{flex:'3 1 auto'}} />
+          <div style={{flex:'3 0 8vh'}} />
           <div style={{flex:'1 0 auto', display:'flex', flexDirection:'column', alignItems:'center', minHeight:'300px'}}>
             <Logo text='Hays Baseball Club' />
             <div style={{flex:'1 0 auto', color:'rgba(0,0,0,0.4)', fontSize:'30px', display:'flex', alignItems:'center',
@@ -42,9 +44,11 @@ class Dashboard extends Component {
               }
             </div>
           </div>
-          <div style={{flex:'3 1 auto'}} />
+          <div style={{flex:'3 1 auto', display:'flex', justifyContent:'center'}}>
+            <UpcomingEvents />
+          </div>
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

@@ -60,6 +60,6 @@ export const playerBirthDate = (min, max) => value => {
 };
 
 export const fullName = value =>
-  value && !/^[a-z]+[\s]+[a-z]+$/i.test(value)
+  value && !/^[a-z]([-']?[a-z]+)*( [a-z]([-']?[a-z]+)*)+$/i.test(value.trim())
     ? 'Please enter a full name (first and last)'
     : undefined

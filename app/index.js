@@ -35,14 +35,10 @@ class App extends Component {
           <BrowserRouter>
             <div style={{height:'100%', display:'flex', flexDirection:'column', color:'#212121', fontFamily:'sans-serif'}}>
               <Route component={TopMenu} />
-              <div style={{flex:'1 1 auto', width:'100%', position:'relative', minHeight:'400px'}}>
+              <div style={{flex:'1 0 auto', width:'100%', position:'relative'}}>
                 <Route render={(props) => (
                   <Main {...props} />
                 )} />
-              </div>
-              <div style={{flex:'0 0 40px', color:'#ddd', fontSize:'12px',
-                           display:'flex', alignItems:'center', justifyContent:'center'}}>
-                <div>Copyright Ⓒ Hays Baseball Club {moment().format('YYYY')}</div>
               </div>
             </div>
           </BrowserRouter>

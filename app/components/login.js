@@ -12,6 +12,7 @@ import { required, email } from '../validators';
 import Logo from 'components/logo';
 import { Link } from 'react-router-dom';
 import qs from 'query-string';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class GoogleButton extends Component {
   click() {
@@ -71,17 +72,13 @@ class Login extends Component {
   render () {
     const { handleSubmit, pristine, submitting, valid, hbc, actions, history } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center', alignItems:'center'}}>
-        <form onSubmit={handleSubmit(this._submit)}>
-          <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
-            <div style={{height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column',
-                         marginBottom:'10px'}}>
-              <Logo text='Login' large={true} />
-            </div>
+      <AbsoluteWrapper>
+        <form onSubmit={handleSubmit(this._submit)} style={{flex:'1 0 auto'}}>
+          <div style={{paddingBottom:'20px', height:'60px', display:'flex', flexDirection:'column', width:'100%', paddingTop:'40px'}}>
+            <Logo text='Login' large={true} />
           </div>
           <div>
-            <Field component={FormInput} name='email' label='Email Address' autoFocus={true}
+            <Field component={FormInput} name='email' label='Email Address'
                    validate={[required, email]} style={{width:'300px'}} />
             <Field component={FormInput} name='password' label='Password' type='password'
                    validate={[required]} style={{width:'300px'}} />
@@ -106,7 +103,7 @@ class Login extends Component {
             <Field component={GoogleButton} name='email' actions={actions} />
           </div>
         </form>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

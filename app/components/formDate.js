@@ -2,10 +2,15 @@
  * Created by jamesbillinger on 4/18/17.
  */
 import React, { Component } from 'react';
-import DatePicker from "material-ui/DatePicker";
+import DatePicker from 'material-ui/DatePicker';
+import TimePicker from 'material-ui/TimePicker';
 import moment from 'moment';
 
 export default class FormDate extends Component {
+  componentWillMount() {
+    this._onChange = ::this.onChange;
+  }
+  
   focus() {
     this._field && this._field.focus();
   }
@@ -29,17 +34,20 @@ export default class FormDate extends Component {
   }
 
   render() {
-    const {style, type, input, meta, label, defaultDate, ...props} = this.props;
+    const { style, type, input, meta, label, defaultDate, id='datePicker', time, ...props } = this.props;
     const { value, onChange, onBlur, onFocus } = input || props;
     const { error, touched } = meta || props;
     let newStyle = Object.assign({
       margin:'0px 10px',
-      verticalAlign:'top',
-      fontWeight:'normal',
-      display:'block'
+      fontWeight:'normal'
     }, style);
+    let newTextFieldStyle = {};
+    if (time) {
+      newTextFieldStyle.width = '100%';
+    }
     if (props.disabled) {
       newStyle.color = 'rgba(0,0,0,0.3)';
+      newTextFieldStyle.width = '100px';
     }
     if (props.multiLine) {
       newStyle.width = '80%';
@@ -50,12 +58,21 @@ export default class FormDate extends Component {
     } else if (defaultDate) {
       myValue = moment(defaultDate);
     }
+    Object.assign(newStyle, style);
+    Object.assign(newTextFieldStyle, style);
     return (
-      <DatePicker ref={(c) => this._field = c} style={newStyle} value={myValue && myValue._d} autoOk={true}
-                  floatingLabelStyle={{pointerEvents: 'none', whiteSpace:'nowrap', left:'0px', color:'rgba(33, 33, 33, 0.5)'}}
-                  onChange={::this.onChange} floatingLabelText={label} errorText={(touched && error) ? error : null}
-                  formatDate={(dt) => (moment(dt).format('MMM D, YYYY'))} firstDayOfWeek={0} mode='landscape'
-                  onBlur={onBlur} onFocus={onFocus} {...props} />
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+        <DatePicker ref={(c) => this._field = c} style={newStyle} value={myValue && myValue._d} autoOk={true} id={id}
+                    floatingLabelStyle={{pointerEvents: 'none', whiteSpace:'nowrap', left:'0px', color:'rgba(33, 33, 33, 0.5)'}}
+                    onChange={this._onChange} floatingLabelText={label} errorText={(touched && error) ? error : null}
+                    formatDate={(dt) => (moment(dt).format('MMM D, YYYY'))} firstDayOfWeek={0} mode='landscape'
+                    onBlur={onBlur} onFocus={onFocus} {...props} />
+        {time &&
+          <TimePicker id='timePicker' textFieldStyle={newTextFieldStyle} style={{flex:'1 1 auto'}}
+                      autoOk={true} onChange={this._onChange} value={myValue && myValue._d}
+                      errorText={(meta.touched && meta.error) ? meta.error : null} />
+        }
+      </div>
     );
   }
 }

@@ -7,25 +7,8 @@ import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import Paper from 'material-ui/Paper';
 import Logo from 'components/logo';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
-const coaches = [
-  {
-    name: 'Jeremy Schmeidler',
-    ageGroup: '8U',
-    phone: '',
-    email: 'jbschmeidler@gmail.com'
-  }, {
-    name: 'Wade Ditter',
-    ageGroup: '9U',
-    phone: '',
-    email: 'wadeditter@gmail.com'
-  }, {
-    name: 'Luke Dreiling',
-    ageGroup: '10U',
-    phone: '',
-    email: 'lukedreiling6@hotmail.com'
-  }
-];
 
 class Contact extends Component {
   componentDidMount() {
@@ -38,9 +21,8 @@ class Contact extends Component {
   render() {
     const { contacts, user } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center'}}>
-        <div style={{width:'600px', maxWidth:'100%'}}>
+      <AbsoluteWrapper>
+        <div style={{width:'600px', maxWidth:'100%', flex:'1 0 auto'}}>
           <div style={{paddingBottom:'20px', height:'60px', display:'flex', flexDirection:'column', width:'100%'}}>
             <Logo text='Contact' />
           </div>
@@ -71,7 +53,7 @@ class Contact extends Component {
             })}
           </div>
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

@@ -11,6 +11,7 @@ import { required, minLength } from '../validators';
 import Logo from 'components/logo';
 import qs from 'query-string';
 const minLength8 = minLength(8);
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class ResetPassword extends Component {
   constructor() {
@@ -78,8 +79,7 @@ class ResetPassword extends Component {
       buttonStyle.cursor = 'default';
     }
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center', alignItems:'center'}}>
+      <AbsoluteWrapper>
         <form onSubmit={handleSubmit(this._submit)}>
           <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
             <div style={{height:'20px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column',
@@ -107,7 +107,7 @@ class ResetPassword extends Component {
                     type='submit' disabled={pristine || submitting || !valid} />
           </div>
         </form>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

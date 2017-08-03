@@ -111,12 +111,8 @@ class UserForm extends Component {
                    display:'flex', justifyContent:'center', paddingTop:'4vh'}}>
         <div>
           {title &&
-            <div style={{display:'flex', justifyContent:'center', width:'100%'}}>
-              <div style={Object.assign({
-                height:'30px', width:'100%', maxWidth:'600px', display:'flex', flexDirection:'column', marginBottom:'10px'
-              }, titleStyle)}>
-                <Logo text={title} />
-              </div>
+            <div style={{paddingBottom:'20px', height:'60px', display:'flex', flexDirection:'column', width:'100%'}}>
+              <Logo text={title} />
             </div>
           }
           <div style={{display:'flex'}}>

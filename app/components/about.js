@@ -8,6 +8,7 @@ import * as Actions from 'app/actions';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import { Link } from 'react-router-dom';
 import Logo from 'components/logo';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 const questions = [
   {
@@ -25,9 +26,8 @@ class About extends Component {
   render() {
     const { history, location, faqs } = this.props;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center', overflow:'auto'}}>
-        <div style={{width:'600px', maxWidth:'100%'}}>
+      <AbsoluteWrapper>
+        <div style={{width:'600px', maxWidth:'100%', flex:'1 0 auto'}}>
           <div style={{paddingBottom:'20px', height:'60px', display:'flex', flexDirection:'column', width:'100%'}}>
             <Logo text='About' />
           </div>
@@ -69,7 +69,7 @@ class About extends Component {
             )}
           </div>
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

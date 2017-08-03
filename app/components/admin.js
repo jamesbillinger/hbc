@@ -7,11 +7,14 @@ import TeamForm from 'components/teamForm';
 import UserForm from 'components/userForm';
 import PlayerForm from 'components/playerForm';
 import FAQForm from 'components/faqForm';
+import EventForm from 'components/eventForm';
 import { Route, Switch, Link } from 'react-router-dom';
 import Users from 'components/users';
 import Players from 'components/players';
 import Teams from 'components/teams';
 import FAQs from 'components/faqs';
+import Events from 'components/events';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class Admin extends Component {
   constructor() {
@@ -36,8 +39,7 @@ class Admin extends Component {
     const { hbc, location } = this.props;
     const { tab, initialValues } = this.state;
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', flexDirection:'column', alignItems:'center'}}>
+      <AbsoluteWrapper>
         <div style={{flex:'0 0 auto', width:'100%', display:'flex', justifyContent:'center', backgroundColor:'#DCEDC8'}}>
           <div style={{display:'flex', maxWidth:'800px', width:'100%', alignItems:'center', margin:'0px 50px',
                        justifyContent:'space-between'}}>
@@ -57,6 +59,10 @@ class Admin extends Component {
               <Link className={'tabButton' + (location.pathname === '/admin/faqs' ? ' active' : '')}
                     to='/admin/faqs'>
                 FAQs
+              </Link>
+              <Link className={'tabButton' + (location.pathname === '/admin/events' ? ' active' : '')}
+                    to='/admin/events'>
+                Events
               </Link>
             </div>
             <div>
@@ -80,10 +86,15 @@ class Admin extends Component {
                   Add New FAQ
                 </Link>
               } />
+              <Route path='/admin/events' exact={true} render={(props) =>
+                <Link className='tabButton' to='/admin/event'>
+                  Add New Event
+                </Link>
+              } />
             </div>
           </div>
         </div>
-        <div style={{flex:'1 1 auto', width:'100%', maxWidth:'800px', paddingTop:'20px'}}>
+        <div style={{flex:'1 0 auto', width:'100%', maxWidth:'800px', paddingTop:'20px'}}>
           <AutoSizer>
             {({height, width}) =>
               <Route location={location} key={location.key}>
@@ -140,12 +151,25 @@ class Admin extends Component {
                       }
                     </div>
                   } />
+                  <Route path='/admin/events' exact={true} render={(props) =>
+                    <Events width={width} height={height} {...props} />
+                  } />
+                  <Route path='/admin/event/:uid?' render={(props) =>
+                    <div style={{width: width + 'px'}}>
+                      {hbc.events &&
+                      <EventForm initialValues={hbc.events[props.match.params.uid]}
+                               title={props.match.params.uid ? 'Edit Event' : 'Add New Event'}
+                               titleStyle={{width:'280px', paddingBottom:'20px'}}
+                               form={'EventForm_' + (props.match.params ? props.match.params.uid : 'new')} {...props} />
+                      }
+                    </div>
+                  } />
                 </Switch>
               </Route>
             }
           </AutoSizer>
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

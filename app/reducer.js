@@ -51,6 +51,11 @@ function hbc(state = initialState, action) {
         faqs: action.faqs || {}
       });
 
+    case 'FETCH_EVENTS':
+      return Object.assign({}, state, {
+        events: action.events || {}
+      });
+
     case 'FETCH_CONTACTS':
       return Object.assign({}, state, {
         contacts: action.contacts || {}

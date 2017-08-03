@@ -11,7 +11,7 @@ export default class Icon extends Component {
   render() {
     const {tooltip, style, children, onClick, onTouchTap, primary, secondary, to, href, target, iconStyle, className, ...props} = this.props;
 
-    let newIconStyle = Object.assign({}, iconStyle);
+    let newIconStyle = {};
     if (style && style.fontSize) {
       newIconStyle.fontSize = style.fontSize;
       delete style.fontSize;
@@ -25,6 +25,7 @@ export default class Icon extends Component {
     } else {
       newIconStyle.color = undefined;
     }
+    Object.assign(newIconStyle, iconStyle);
 
     let iconClassName = 'material-icons';
     if (className) {

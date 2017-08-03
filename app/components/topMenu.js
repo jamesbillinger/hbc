@@ -55,6 +55,7 @@ class Main extends Component {
         <nav style={{display:'flex', alignItems:'center', flex:'0 0 40%'}}>
           <MenuButton to='/' location={location}>Home</MenuButton>
           <MenuButton to='/about' location={location}>About</MenuButton>
+          <MenuButton to='/schedule' location={location}>Schedule</MenuButton>
           <MenuButton to='/contact' location={location}>Contact</MenuButton>
         </nav>
         <div style={{flex:'0 0 20%', textAlign:'center'}}>

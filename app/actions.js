@@ -541,6 +541,58 @@ export function deleteFAQ(uid) {
   }
 }
 
+
+export function fetchEvents() {
+  return dispatch => {
+    firebaseRef.child('/events/').on('value', (snap) => {
+      let events = {};
+      snap.forEach((child) => {
+        events[child.key] = child.val();
+      });
+      dispatch({
+        type: 'FETCH_EVENTS',
+        events
+      });
+    });
+  }
+}
+
+export function addEvent(event, callback) {
+  return dispatch => {
+    let newKey = firebaseRef.child('/events/').push().key;
+    firebaseRef.child('/events/' + newKey).set({
+      uid: newKey,
+      ...event
+    });
+    callback && callback();
+  }
+}
+
+export function updateEvent(event, callback) {
+  return dispatch => {
+    firebaseRef.child('/events/' + event.uid).set(event);
+    callback && callback();
+  }
+}
+
+export function deleteEvent(uid) {
+  return dispatch => {
+    firebaseRef.child('/events/' + uid).remove();
+    firebaseRef.child('/teams').once('value').then((snap) => {
+      snap.forEach((child) => {
+        let team = child.val();
+        if (team && team.events && team.events[uid]) {
+          let events = Object.assign({}, team.event);
+          delete events[uid];
+          child.update({
+            events
+          });
+        }
+      });
+    });
+  }
+}
+
 export function fetchContacts() {
   return dispatch => {
     fetch('/api/contacts', {

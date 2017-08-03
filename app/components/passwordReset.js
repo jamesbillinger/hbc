@@ -6,12 +6,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
 import { Link } from 'react-router-dom';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class PasswordReset extends Component {
   render () {
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+      <AbsoluteWrapper>
         <div style={{fontSize:'16px', color:'#bbb'}} className='content'>
           Your password has been reset.  Please Check your email for a link to create your new password.
         </div>
@@ -21,7 +21,7 @@ class PasswordReset extends Component {
             Return Home
           </Link>
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }

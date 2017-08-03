@@ -5,6 +5,7 @@ import * as Actions from 'app/actions';
 import FormInput from './formInput';
 import UserForm from './userForm';
 import qs from 'query-string';
+import AbsoluteWrapper from 'components/absoluteWrapper';
 
 class LabelledText extends Component {
   render() {
@@ -47,9 +48,8 @@ class Profile extends Component {
       oobCode = true;
     }
     return (
-      <div style={{position:'absolute', top:'0px', right:'0px', bottom:'0px', left:'0px',
-                   display:'flex', justifyContent:'center'}}>
-        <div style={{margin:'4vw', width:'100%'}}>
+      <AbsoluteWrapper>
+        <div style={{width:'100%', flex:'1 0 auto'}}>
           {!oobCode && (hbc.user.emailVerified
             ? <UserForm initialValues={hbc.user} title='My Profile' form={'UserForm_' + hbc.user.uid} history={history}/>
             : <div style={{display:'flex', justifyContent:'center'}}>
@@ -77,7 +77,7 @@ class Profile extends Component {
               </div>
           )}
         </div>
-      </div>
+      </AbsoluteWrapper>
     );
   }
 }
