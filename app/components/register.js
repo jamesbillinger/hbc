@@ -1,6 +1,3 @@
-/**
- * Created by jamesbillinger on 4/2/17.
- */
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -14,6 +11,7 @@ import { required, email, phoneNumber, fullName, minLength } from '../validators
 import Logo from 'components/logo';
 const minLength8 = minLength(8);
 import AbsoluteWrapper from 'components/absoluteWrapper';
+import FacebookButton from 'components/facebookButton';
 
 class GoogleButton extends Component {
   click() {
@@ -81,6 +79,9 @@ class Register extends Component {
               <div style={{marginTop:'40px', textAlign:'center'}}>
                 <Field component={GoogleButton} name='email' actions={actions} />
               </div>
+              {/*<div style={{marginTop:'20px', textAlign:'center'}}>
+                <Field component={FacebookButton} name='email' actions={actions} />
+              </div>*/}
             </div>
             <div style={{flex:'1 0 auto'}} className='content'>
               <h3 style={{textAlign:'center'}}>...or register with email</h3>

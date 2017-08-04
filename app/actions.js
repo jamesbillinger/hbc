@@ -7,6 +7,8 @@ const firebaseApp = firebase.initializeApp(config.firebase);
 const firebaseRef = firebaseApp.database().ref();
 const firebaseAuth = firebase.auth;
 let provider = new firebase.auth.GoogleAuthProvider();
+let fbProvider = new firebase.auth.FacebookAuthProvider();
+fbProvider.addScope('email');
 
 export function register(data, callback) {
   return dispatch => {
@@ -149,6 +151,34 @@ export function loginWithGoogle(email, callback) {
     firebaseAuth().getRedirectResult().then((result) => {
       if (result.credential) {
         // This gives you a Google Access Token. You can use it to access the Google API.
+        //var token = result.credential.accessToken;
+      }
+      let user = result.user;
+      callback && callback(user);
+    }).catch((err) => {
+      // Handle Errors here.
+      var errorCode = err.code;
+      var errorMessage = err.message;
+      // The email of the user's account used.
+      var email = err.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = err.credential;
+      console.log(err);
+      dispatch({
+        type: 'UPDATE_AUTH',
+        err
+      });
+      callback && callback(undefined, err);
+    });
+  }
+}
+
+export function loginWithFacebook(email, callback) {
+  return dispatch => {
+    firebaseAuth().signInWithRedirect(fbProvider);
+    firebaseAuth().getRedirectResult().then((result) => {
+      if (result.credential) {
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
         //var token = result.credential.accessToken;
       }
       let user = result.user;
@@ -631,21 +661,25 @@ function loadAgeGroups(dispatch) {
   let ageGroups = [{
     value: '10u',
     label: '10U',
+    sort: 10,
     min: min.clone(),
     max: min.clone().add(1, 'year').subtract(1,'day').endOf('day')
   }, {
     value: '9u',
     label: '9U',
+    sort: 9,
     min: min.clone().add(1, 'year'),
     max: min.clone().add(2, 'year').subtract(1,'day').endOf('day')
   }, {
     value: '8u',
     label: '8U',
+    sort: 8,
     min: min.clone().add(2, 'year'),
     max: min.clone().add(3, 'year').subtract(1,'day').endOf('day')
   }, {
     value: '7u',
     label: '7U',
+    sort: 7,
     min: min.clone().add(3, 'year'),
     max: min.clone().add(4, 'year').subtract(1,'day').endOf('day')
   }];

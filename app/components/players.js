@@ -6,6 +6,10 @@ import { Column, Table } from 'react-virtualized';
 import Icon from 'components/icon';
 import moment from 'moment';
 import find from 'lodash/find';
+import orderBy from 'lodash/orderBy';
+import isEqual from 'lodash/isEqual';
+import FormSelect from 'components/formSelect';
+import filter from 'lodash/filter';
 
 class Players extends Component {
   constructor() {
@@ -15,6 +19,66 @@ class Players extends Component {
 
   componentWillMount() {
     this._rowClassName = ::this.rowClassName;
+    this._ageGroupChange = ::this.ageGroupChange;
+  }
+
+  componentDidMount() {
+    const { hbc } = this.props;
+    this._ageGroupOptions = [
+      {
+        value: undefined,
+        label: 'All Age Groups'
+      },
+      ...orderBy(hbc.ageGroups || [], 'sort','asc').map((a) => ({
+        value: a.value,
+        label: a.label
+      }))
+    ];
+    if (hbc.players) {
+      this.setState({
+        players: this.loadPlayers()
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { hbc } = this.props;
+    if ((hbc.players && !prevProps.hbc.players) || !isEqual(hbc.players, prevProps.hbc.players)) {
+      this.setState({
+        players: this.loadPlayers()
+      });
+    }
+  }
+
+  loadPlayers(ageGroup) {
+    const { hbc } = this.props;
+    return filter(
+      orderBy(Object.keys(hbc.players || {}).map((k) => hbc.players[k]), [(u) => {
+        if (u.birthdate) {
+          let v = moment(u.birthdate);
+          return (find(hbc.ageGroups, (a) => {
+            return v >= a.min && v <= a.max;
+          }) || {}).sort;
+        } else {
+          return -1;
+        }
+      }, (u) => (
+        (u.name && u.name.indexOf(' ') > -1) ? u.name.split(' ')[1] : u.email
+      )], ['asc', 'asc']), (u) => {
+        if (ageGroup) {
+          if (u.birthdate) {
+            let v = moment(u.birthdate);
+            return (find(hbc.ageGroups, (a) => {
+              return v >= a.min && v <= a.max;
+            }) || {}).value === ageGroup;
+          } else {
+            return false;
+          }
+        } else {
+          return true;
+        }
+      }
+    );
   }
 
   rowClassName ({ index }) {
@@ -88,19 +152,33 @@ class Players extends Component {
     );
   }
 
+  ageGroupChange(val) {
+    this.setState({
+      ageGroup: val,
+      players: this.loadPlayers(val)
+    });
+  }
+
   render() {
     const { hbc, width, height } = this.props;
+    const { players, ageGroup } = this.state;
     return (
-      <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.players || {}).length}
-             rowGetter={({ index }) => hbc.players[Object.keys(hbc.players)[index]]} rowStyle={{cursor:'pointer'}}
-             rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.playerClick}>
-        <Column label='' dataKey='uid' width={30} flexGrow={0}
-                cellRenderer={this.deleteRenderer.bind(this, 'Player')} />
-        <Column label='Name' dataKey='name' width={150} flexGrow={1}/>
-        <Column width={100} label='Age Group' dataKey='birthdate' flexGrow={0} cellRenderer={::this.birthDateRenderer} />
-        <Column width={100} label='Team' dataKey='uid' flexGrow={1} cellRenderer={::this.playerTeamRenderer} />
-        <Column width={150} label='Users' dataKey='users' flexGrow={1} cellRenderer={::this.playerUsersRenderer} />
-      </Table>
+      <div style={{height:height + 'px', width:width + 'px'}}>
+        <div style={{height:'50px', display:'flex', alignItems:'center', justifyContent:'flex-end'}}>
+          <FormSelect input={{value:ageGroup, onChange:this._ageGroupChange}} options={this._ageGroupOptions} />
+        </div>
+        <Table width={width} height={height - 50} headerHeight={20} rowHeight={30} rowCount={(players || []).length}
+               rowGetter={({ index }) => players[index]} rowStyle={{cursor:'pointer'}}
+               rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.playerClick}>
+          <Column label='' dataKey='uid' width={30} flexGrow={0}
+                  cellRenderer={this.deleteRenderer.bind(this, 'Player')} />
+          <Column label='' dataKey='uid' width={30} flexGrow={0} cellRenderer={({rowIndex}) => <div>{rowIndex + 1}</div>} />
+          <Column label='Name' dataKey='name' width={150} flexGrow={1}/>
+          <Column width={100} label='Age Group' dataKey='birthdate' flexGrow={0} cellRenderer={::this.birthDateRenderer} />
+          <Column width={100} label='Team' dataKey='uid' flexGrow={1} cellRenderer={::this.playerTeamRenderer} />
+          <Column width={150} label='Users' dataKey='users' flexGrow={1} cellRenderer={::this.playerUsersRenderer} />
+        </Table>
+      </div>
     );
   }
 }

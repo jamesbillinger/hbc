@@ -1,7 +1,7 @@
 /**
  * Created by jamesbillinger on 4/2/17.
  */
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'app/actions';
@@ -13,6 +13,7 @@ import Logo from 'components/logo';
 import { Link } from 'react-router-dom';
 import qs from 'query-string';
 import AbsoluteWrapper from 'components/absoluteWrapper';
+import FacebookButton from 'components/facebookButton';
 
 class GoogleButton extends Component {
   click() {
@@ -23,8 +24,8 @@ class GoogleButton extends Component {
   render() {
     return (
       <div className='registerButton' onClick={::this.click}
-           style={{padding:'16px 30px', borderRadius:'30px', color:'#000', width:'100%', alignItems:'center',
-             fontSize:'16px', cursor:'pointer', display:'flex', justifyContent:'center'}}>
+           style={{padding:'16px 30px', borderRadius:'30px', color:'#000', width:'200px', alignItems:'center',
+             fontSize:'16px', cursor:'pointer', display:'flex', justifyContent:'center', marginBottom:'20px'}}>
         <img src='images/google.svg' height='20px' width='20px' />
         <div style={{paddingLeft:'10px'}}>Sign in with Google</div>
       </div>
@@ -99,8 +100,9 @@ class Login extends Component {
             <button style={{height:'0px', width:'0px', position:'absolute', outline:'none', border:'none', right:'10px', background:'none'}}
                     type='submit' disabled={pristine || submitting || !valid} />
           </div>
-          <div style={{display:'flex', justifyContent:'space-between', margin:'30px 10px 0px 10px', alignItems:'center'}}>
+          <div style={{display:'flex', flexDirection:'column', alignItems:'center', margin:'30px 10px 0px 10px'}}>
             <Field component={GoogleButton} name='email' actions={actions} />
+            {/*<Field component={FacebookButton} name='email' actions={actions} />*/}
           </div>
         </form>
       </AbsoluteWrapper>
