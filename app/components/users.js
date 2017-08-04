@@ -5,6 +5,8 @@ import * as Actions from 'app/actions';
 import { Column, Table } from 'react-virtualized';
 import Icon from 'components/icon';
 import Toggle from 'material-ui/Toggle';
+import orderBy from 'lodash/orderBy';
+import isEqual from 'lodash/isEqual';
 
 class Users extends Component {
   constructor() {
@@ -14,6 +16,28 @@ class Users extends Component {
 
   componentWillMount() {
     this._rowClassName = ::this.rowClassName;
+  }
+
+  componentDidMount() {
+    const { hbc } = this.props;
+    if (hbc.users) {
+      this.setState({
+        users: orderBy(Object.keys(hbc.users || {}).map((k) => hbc.users[k]), (u) => (
+          (u.name && u.name.indexOf(' ') > -1) ? u.name.split(' ')[1] : u.email
+        ), 'asc')
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { hbc } = this.props;
+    if ((hbc.users && !prevProps.hbc.users) || !isEqual(hbc.users, prevProps.hbc.users)) {
+      this.setState({
+        users: orderBy(Object.keys(hbc.users || {}).map((k) => hbc.users[k]), (u) => (
+          (u.name && u.name.indexOf(' ') > -1) ? u.name.split(' ')[1] : u.email
+        ), 'asc')
+      });
+    }
   }
 
   rowClassName ({ index }) {
@@ -50,7 +74,9 @@ class Users extends Component {
     return (
       <Toggle id='clickable' toggled={!!(hbc.groups && hbc.groups.admin && hbc.groups.admin[cellData])}
               onToggle={(e, isInputChecked) => {
-                actions.setUserGroup(rowData.uid, 'admin', isInputChecked, hbc.groups);
+                if (confirm('Are you sure that you wish to change the Admin status for this user?')) {
+                  actions.setUserGroup(rowData.uid, 'admin', isInputChecked, hbc.groups);
+                }
               }} />
     );
   }
@@ -97,9 +123,10 @@ class Users extends Component {
 
   render() {
     const { hbc, width, height } = this.props;
+    const { users } = this.state;
     return (
-      <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={Object.keys(hbc.users || {}).length}
-             rowGetter={({ index }) => hbc.users[Object.keys(hbc.users)[index]]} rowStyle={{cursor:'pointer'}}
+      <Table width={width} height={height} headerHeight={20} rowHeight={30} rowCount={(users || []).length}
+             rowGetter={({ index }) => users[index]} rowStyle={{cursor:'pointer'}}
              rowClassName={this._rowClassName} headerClassName='headerColumn' onRowClick={::this.userClick}>
         <Column label='' dataKey='uid' width={30} flexGrow={0}
                 cellRenderer={this.deleteRenderer.bind(this, 'User')} />

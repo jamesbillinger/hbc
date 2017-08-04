@@ -11,7 +11,7 @@ export default class AbsoluteWrapper extends Component {
       <div style={
         Object.assign({position:'absolute', top:'0px', right:'0px', left:'0px',
                        display:'flex', flexDirection:'column', alignItems:'center',
-                       minHeight:'calc(100vh - 95px)'}, style)
+                       minHeight:'100%'}, style)
       }>
         {children}
         <div style={{flex:'0 0 40px', color:'#ddd', fontSize:'12px',

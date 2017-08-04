@@ -76,7 +76,8 @@ class Main extends Component {
   render() {
     const { user, groups, location, initialLoadComplete, actions, history } = this.props;
     return (
-      <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={500} transitionLeaveTimeout={500}>
+      <CSSTransitionGroup transitionName='fade' transitionEnterTimeout={500} transitionLeaveTimeout={500}
+                          component='div' style={{height:'100%'}}>
         <Route location={location} key={location.key}>
           <Switch>
             <Route exact={true} path='/' render={(props) => <Dashboard {...props} />} />
