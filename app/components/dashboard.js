@@ -19,7 +19,7 @@ class Dashboard extends Component {
       <AbsoluteWrapper>
         <div style={{width:'1000px', maxWidth:'100%', margin:'4vh 4vw 0vw 4vw', flex:'1 0 auto',
                      display:'flex', flexDirection:'column', justifyContent:'space-around'}}>
-          <div style={{flex:'3 0 8vh'}} />
+          <div style={{flex:'3 1 8vh', maxHeight:'220px'}} />
           <div style={{flex:'1 0 auto', display:'flex', flexDirection:'column', alignItems:'center', minHeight:'300px'}}>
             <Logo text='Hays Baseball Club' />
             <div style={{flex:'1 0 auto', color:'rgba(0,0,0,0.4)', fontSize:'30px', display:'flex', alignItems:'center',
@@ -44,7 +44,7 @@ class Dashboard extends Component {
               }
             </div>
           </div>
-          <div style={{flex:'3 1 auto', display:'flex', justifyContent:'center'}}>
+          <div style={{flex:'3 1 auto', display:'flex', justifyContent:'center', alignItems:'flex-end', paddingBottom:'2vh'}}>
             <UpcomingEvents />
           </div>
         </div>
