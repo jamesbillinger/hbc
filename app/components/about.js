@@ -52,7 +52,7 @@ class About extends Component {
                 <Card key={k} style={{marginBottom:'10px'}}>
                   <CardHeader title={q.question} actAsExpander={true} showExpandableButton={true}
                               style={{backgroundColor:'#DCEDC8', padding:'12px 16px'}} />
-                  <CardText expandable={true}>
+                  <CardText expandable={true} style={{whiteSpace:'pre-wrap'}}>
                     {q.answer}
                   </CardText>
                 </Card>
@@ -62,7 +62,7 @@ class About extends Component {
               <Card key={qi} style={{marginBottom:'10px'}}>
                 <CardHeader title={q.title} actAsExpander={true} showExpandableButton={true}
                             style={{backgroundColor:'#DCEDC8', padding:'12px 16px'}} />
-                <CardText expandable={true}>
+                <CardText expandable={true} style={{whiteSpace:'pre-wrap'}}>
                   {q.answer}
                 </CardText>
               </Card>
