@@ -652,11 +652,11 @@ function loadAgeGroups(dispatch) {
   if (t.month() > 6 || (t.month() === 6 && t.date() > 4)) {
     //next year, not this year
     min = moment().year(t.year() - 10).month(4).date(1).startOf('day');
-    max = moment().year(t.year() - 6).month(3).date(30).endOf('day');
+    max = moment().year(t.year() - 5).month(3).date(30).endOf('day');
   } else {
     //this year
     min = moment().year(t.year() - 11).month(4).date(1).startOf('day');
-    max = moment().year(t.year() - 7).month(3).date(30).endOf('day');
+    max = moment().year(t.year() - 6).month(3).date(30).endOf('day');
   }
   let ageGroups = [{
     value: '10u',
@@ -681,7 +681,7 @@ function loadAgeGroups(dispatch) {
     label: '7U',
     sort: 7,
     min: min.clone().add(3, 'year'),
-    max: min.clone().add(4, 'year').subtract(1,'day').endOf('day')
+    max: min.clone().add(5, 'year').subtract(1,'day').endOf('day')
   }];
   dispatch({
     type: 'LOAD_AGEGROUPS',

@@ -5,6 +5,7 @@ TODO:
  - add facebook
  - date / time picker is awful
  - top menu on smaller devices might not work well
+ - kids younger than 7!
 
 To Push (as pm2 user):
  - git pull
