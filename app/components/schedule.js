@@ -98,8 +98,11 @@ class Schedule extends Component {
                     <div style={{fontSize:'20px'}}>{moment(c.start).format('D')}</div>
                     <div>{moment(c.start).format('MMM')}</div>
                   </div>
-                  <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start'}}>
-                    <div style={{color:'#689F38', fontSize:'15px'}}>{c.name}</div>
+                  <div style={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                      <div style={{color:'#689F38', fontSize:'15px'}}>{c.name}</div>
+                      <div style={{color:'#795548', fontSize:'13px'}}>{c.location}</div>
+                    </div>
                     <div style={{color:'#ccc', margin:'5px 0px', display:'flex', alignItems:'center', fontSize:'13px'}}>
                       <div>{formatDate(c.start, c.end)}</div>
                     </div>

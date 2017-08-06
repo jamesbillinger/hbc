@@ -66,8 +66,11 @@ class ScheduleItem extends Component {
                   <div style={{fontSize:'18px', marginTop:'20px', color:'#689F38'}}>
                     {event.name}
                   </div>
-                  <div style={{display:'flex', marginTop:'5px', color:'#ccc', fontSize:'13px'}}>
-                    <div>{formatDate(event.start, event.end)}</div>
+                  <div style={{marginTop:'8px', color:'#8BC34A', fontSize:'14px'}}>
+                    {event.location}
+                  </div>
+                  <div style={{marginTop:'8px', color:'#ccc', fontSize:'13px'}}>
+                    {formatDate(event.start, event.end)}
                   </div>
                   <div style={{marginTop:'20px', whiteSpace:'pre-wrap'}}>
                     {event.description || event.summary}
