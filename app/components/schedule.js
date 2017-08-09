@@ -12,6 +12,7 @@ import orderBy from 'lodash/orderBy';
 import isEqual from 'lodash/isEqual';
 import Icon from 'components/icon';
 import AbsoluteWrapper from 'components/absoluteWrapper';
+import filter from 'lodash/filter';
 
 const formatDate = function(start, end) {
   let dt = moment(start);
@@ -57,14 +58,42 @@ class Schedule extends Component {
   componentDidMount() {
     const { events } = this.props;
     if (events) {
-      this.setState({events: orderBy(Object.keys(events || {}).map((k) => events[k]), 'start', 'asc')});
+      this.setState({
+        events: filter(
+          orderBy(
+            Object.keys(events || {}).map((k) =>
+              events[k]
+            ), 'start', 'asc'
+          ), (e) => {
+            if (e.end) {
+              return moment(e.end).clone().endOf('day') >= moment();
+            } else {
+              return moment(e.start).clone().endOf('day') >= moment();
+            }
+          })
+          .slice(0, 4)
+      });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { events } = this.props;
     if (events && !prevProps.events || !isEqual(events, prevProps.events)) {
-      this.setState({events: orderBy(Object.keys(events || {}).map((k) => events[k]), 'start', 'asc')});
+      this.setState({
+        events: filter(
+          orderBy(
+            Object.keys(events || {}).map((k) =>
+              events[k]
+            ), 'start', 'asc'
+          ), (e) => {
+            if (e.end) {
+              return moment(e.end).clone().endOf('day') >= moment();
+            } else {
+              return moment(e.start).clone().endOf('day') >= moment();
+            }
+          })
+          .slice(0, 4)
+      });
     }
   }
 

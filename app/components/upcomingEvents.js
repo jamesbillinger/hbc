@@ -10,6 +10,7 @@ import moment from 'moment';
 import Icon from 'components/icon';
 import orderBy from 'lodash/orderBy';
 import isEqual from 'lodash/isEqual';
+import filter from 'lodash/filter';
 
 class Dashboard extends Component {
   constructor() {
@@ -20,14 +21,42 @@ class Dashboard extends Component {
   componentDidMount() {
     const { events } = this.props;
     if (events) {
-      this.setState({events: orderBy(Object.keys(events || {}).map((k) => events[k]), 'start', 'asc').slice(0, 4)});
+      this.setState({
+        events: filter(
+          orderBy(
+            Object.keys(events || {}).map((k) =>
+              events[k]
+            ), 'start', 'asc'
+          ), (e) => {
+            if (e.end) {
+              return moment(e.end).clone().endOf('day') >= moment();
+            } else {
+              return moment(e.start).clone().endOf('day') >= moment();
+            }
+          })
+          .slice(0, 4)
+      });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { events } = this.props;
     if (events && !prevProps.events || !isEqual(events, prevProps.events)) {
-      this.setState({events: orderBy(Object.keys(events || {}).map((k) => events[k]), 'start', 'asc').slice(0, 4)});
+      this.setState({
+        events: filter(
+          orderBy(
+            Object.keys(events || {}).map((k) =>
+              events[k]
+            ), 'start', 'asc'
+          ), (e) => {
+            if (e.end) {
+              return moment(e.end).clone().endOf('day') >= moment();
+            } else {
+              return moment(e.start).clone().endOf('day') >= moment();
+            }
+          })
+          .slice(0, 4)
+      });
     }
   }
 
