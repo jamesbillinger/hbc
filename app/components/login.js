@@ -102,7 +102,7 @@ class Login extends Component {
           </div>
           <div style={{display:'flex', flexDirection:'column', alignItems:'center', margin:'30px 10px 0px 10px'}}>
             <Field component={GoogleButton} name='email' actions={actions} />
-            {/*<Field component={FacebookButton} name='email' actions={actions} />*/}
+            <Field component={FacebookButton} name='email' actions={actions} />
           </div>
         </form>
       </AbsoluteWrapper>

@@ -79,9 +79,9 @@ class Register extends Component {
               <div style={{marginTop:'40px', textAlign:'center'}}>
                 <Field component={GoogleButton} name='email' actions={actions} />
               </div>
-              {/*<div style={{marginTop:'20px', textAlign:'center'}}>
+              <div style={{marginTop:'20px', textAlign:'center'}}>
                 <Field component={FacebookButton} name='email' actions={actions} />
-              </div>*/}
+              </div>
             </div>
             <div style={{flex:'1 0 auto'}} className='content'>
               <h3 style={{textAlign:'center'}}>...or register with email</h3>
