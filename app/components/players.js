@@ -62,9 +62,7 @@ class Players extends Component {
         } else {
           return -1;
         }
-      }, (u) => (
-        (u.name && u.name.indexOf(' ') > -1) ? u.name.split(' ')[1] : u.email
-      )], ['asc', 'asc']), (u) => {
+      }, 'birthdate'], ['asc', 'desc']), (u) => {
         if (ageGroup) {
           if (u.birthdate) {
             let v = moment(u.birthdate);
@@ -131,6 +129,16 @@ class Players extends Component {
     }
   }
 
+  ageRenderer({cellData, rowData}) {
+    const { hbc } = this.props;
+    if (cellData) {
+      let v = moment.duration(moment().diff(moment(cellData)));
+      return <div>{v.years()}y {v.months()}m {v.days()}d</div>;
+    } else {
+      return <div />;
+    }
+  }
+
   playerTeamRenderer({cellData, rowData}) {
     const { hbc } = this.props;
     if (cellData) {
@@ -175,6 +183,7 @@ class Players extends Component {
           <Column label='' dataKey='uid' width={30} flexGrow={0} cellRenderer={({rowIndex}) => <div>{rowIndex + 1}</div>} />
           <Column label='Name' dataKey='name' width={150} flexGrow={1}/>
           <Column width={100} label='Age Group' dataKey='birthdate' flexGrow={0} cellRenderer={::this.birthDateRenderer} />
+          <Column width={100} label='Age' dataKey='birthdate' flexGrow={0} cellRenderer={::this.ageRenderer} />
           <Column width={100} label='Team' dataKey='uid' flexGrow={1} cellRenderer={::this.playerTeamRenderer} />
           <Column width={150} label='Users' dataKey='users' flexGrow={1} cellRenderer={::this.playerUsersRenderer} />
         </Table>

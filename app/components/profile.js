@@ -62,7 +62,7 @@ class Profile extends Component {
                   }
                   {!sent &&
                     <div style={{display:'flex', justifyContent:'center', marginTop:'30px'}}>
-                      <div onClick={this.resend} className='dashboardButton'
+                      <div onClick={::this.resend} className='dashboardButton'
                            style={{padding:'16px 25px', border:'none', borderRadius:'30px', color:'white', cursor:'pointer'}}>
                         Resend Verification Email
                       </div>
